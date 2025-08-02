@@ -40,7 +40,7 @@ Etapa 1/*_unicos.csv
 .idea/
 *.sublime-*
 
-# Archivos de Python (si se agregan scripts)
+# Archivos de Python 
 __pycache__/
 *.py[cod]
 *$py.class
@@ -49,14 +49,3 @@ __pycache__/
 env/
 venv/
 ENV/
-
-# Archivos de Node.js (si se agregan herramientas)
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Archivos de Java (para Spark/Hadoop)
-*.class
-*.jar
-target/ 
