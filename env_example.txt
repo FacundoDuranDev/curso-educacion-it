@@ -1,0 +1,93 @@
+# 🔧 Variables de Entorno - Data Engineering Project
+# Copia este archivo como .env y ajusta los valores según tu configuración
+
+# =============================================================================
+# 🐍 PYTHON CONFIGURATION
+# =============================================================================
+PYTHONPATH=/usr/local/lib/python3.9/site-packages
+PYTHONUNBUFFERED=1
+PYTHONDONTWRITEBYTECODE=1
+
+# =============================================================================
+# 🗄️ POSTGRESQL CONFIGURATION
+# =============================================================================
+PGHOST=localhost
+PGPORT=5432
+PGUSER=admin
+PGPASSWORD=admin
+PGDATABASE=educacionit
+PGPASSFILE=~/.pgpass
+
+# =============================================================================
+# 🔥 APACHE SPARK CONFIGURATION
+# =============================================================================
+JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+SPARK_HOME=/opt/spark
+HADOOP_HOME=/opt/hadoop
+PYSPARK_PYTHON=/usr/bin/python3
+PYSPARK_DRIVER_PYTHON=/usr/bin/python3
+SPARK_LOCAL_IP=127.0.0.1
+SPARK_DRIVER_MEMORY=2g
+SPARK_EXECUTOR_MEMORY=2g
+
+# =============================================================================
+# 🐳 DOCKER CONFIGURATION
+# =============================================================================
+DOCKER_HOST=unix:///var/run/docker.sock
+DOCKER_BUILDKIT=1
+COMPOSE_DOCKER_CLI_BUILD=1
+DOCKER_UID=1000
+DOCKER_GID=1000
+
+# =============================================================================
+# 📊 JUPYTER CONFIGURATION
+# =============================================================================
+JUPYTER_ENABLE_LAB=yes
+JUPYTER_TOKEN=
+JUPYTER_PASSWORD=
+JUPYTER_IP=0.0.0.0
+JUPYTER_PORT=8888
+
+# =============================================================================
+# 🗄️ ALTERNATIVE DATABASES (Optional)
+# =============================================================================
+
+# MySQL
+MYSQL_HOST=localhost
+MYSQL_PORT=3306
+MYSQL_USER=root
+MYSQL_PASSWORD=password
+MYSQL_DATABASE=test
+
+# MongoDB
+MONGO_URI=mongodb://localhost:27017
+MONGO_DATABASE=test
+
+# =============================================================================
+# 🛠️ DEVELOPMENT CONFIGURATION
+# =============================================================================
+DEBUG=True
+LOG_LEVEL=INFO
+ENVIRONMENT=development
+
+# =============================================================================
+# 📁 PROJECT PATHS
+# =============================================================================
+PROJECT_ROOT=/home/user/educacionit
+DATA_DIR=/home/user/educacionit/Etapa 1
+SCRIPTS_DIR=/home/user/educacionit/scripts
+NOTEBOOKS_DIR=/home/user/educacionit/notebooks
+
+# =============================================================================
+# 🔐 SECURITY (Change these in production!)
+# =============================================================================
+SECRET_KEY=your-secret-key-here
+ALLOWED_HOSTS=localhost,127.0.0.1
+CSRF_TRUSTED_ORIGINS=http://localhost:8888
+
+# =============================================================================
+# 📊 MONITORING
+# =============================================================================
+ENABLE_LOGGING=true
+LOG_FILE=/tmp/data_engineering.log
+METRICS_ENABLED=false 

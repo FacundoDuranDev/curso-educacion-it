@@ -66,6 +66,7 @@ educacionit/
 - Git
 
 > 📖 **Guía completa de instalación**: Ver [GUIA_INSTALACION.md](GUIA_INSTALACION.md) para instrucciones detalladas paso a paso.
+> 🔧 **Variables de entorno**: Ver [GUIA_VARIABLES_ENTORNO.md](GUIA_VARIABLES_ENTORNO.md) para evitar problemas de configuración.
 
 ### 🐧 Instalación de WSL (Windows Subsystem for Linux)
 
