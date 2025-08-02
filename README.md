@@ -112,31 +112,7 @@ psql -h localhost -p 5432 -U admin -d educacionit -f scripts/ejercicios_clase.sq
 - **Spark Worker** (puerto 8081) - Nodos de procesamiento
 - **Hive Server** - Data warehouse
 
-## 📖 Estructura del Curso
 
-### Módulo 1: Fundamentos de Data Engineering
-- Concepto de ingeniería de datos
-- Data Governance
-- Ciclo de vida del dato
-- Preparación e integración de datos
-
-### Módulo 2: Modelado de Datos
-- Modelo ERD
-- Formas normales (1FN-5FN)
-- ETL: extracción, transformación y carga
-- Optimización de consultas SQL
-
-### Módulo 3: Big Data
-- Casos de uso
-- Data lake
-- Arquitectura Hadoop
-- Ecosistema Hadoop
-
-### Módulo 4: Procesamiento de Datos
-- Apache Spark
-- Apache Hive
-- Formatos de almacenamiento
-- Streaming de datos
 
 ## 🤝 Contribuciones
 
