@@ -36,11 +36,12 @@ educacionit/
 ## 🛠️ Tecnologías Utilizadas
 
 - **PostgreSQL 15** - Base de datos relacional
+- **Apache Hadoop 3.2.1** - Framework de Big Data
+- **Apache Spark 3.1.1** - Procesamiento distribuido
+- **Apache Hive 2.3.2** - Data warehouse
+- **Python 3.9+** - Análisis de datos y ETL
+- **Jupyter Lab** - Entorno de desarrollo interactivo
 - **Docker & Docker Compose** - Containerización
-- **Hadoop** - Procesamiento distribuido
-- **Apache Spark** - Procesamiento de datos
-- **Apache Hive** - Data warehouse
-- **SQL** - Consultas y análisis de datos
 
 ## 📊 Datasets Incluidos
 
@@ -64,17 +65,19 @@ educacionit/
 - Docker y Docker Compose instalados
 - Git
 
+> 📖 **Guía completa de instalación**: Ver [GUIA_INSTALACION.md](GUIA_INSTALACION.md) para instrucciones detalladas paso a paso.
+
 ### Pasos de Instalación
 
 1. **Clonar el repositorio:**
 ```bash
-git clone <URL_DEL_REPO>
-cd educacionit
+git clone https://github.com/FacundoDuranDev/curso-educacion-it.git
+cd curso-educacion-it
 ```
 
-2. **Levantar los servicios Docker:**
+2. **Levantar todos los servicios Docker:**
 ```bash
-docker-compose up -d postgres
+docker-compose up -d
 ```
 
 3. **Crear y cargar la base de datos:**
@@ -83,10 +86,23 @@ chmod +x scripts/setup_database.sh
 ./scripts/setup_database.sh
 ```
 
-4. **Conectar a PostgreSQL:**
+4. **Acceder a Jupyter Lab:**
+   - Abrir navegador en: http://localhost:8888
+   - Abrir notebook: `01_introduccion_data_engineering.ipynb`
+
+5. **Conectar a PostgreSQL:**
 ```bash
 psql -h localhost -p 5432 -U admin -d educacionit
 ```
+
+### 🌐 Interfaces Web Disponibles
+
+| Servicio | URL | Descripción |
+|----------|-----|-------------|
+| **Jupyter Lab** | http://localhost:8888 | Entorno de desarrollo Python |
+| **Spark Master** | http://localhost:8080 | Interfaz de Spark |
+| **Hadoop Namenode** | http://localhost:9870 | Interfaz de HDFS |
+| **Spark Worker** | http://localhost:8081 | Interfaz del worker de Spark |
 
 ## 📚 Ejercicios y Prácticas
 
