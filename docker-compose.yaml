@@ -84,6 +84,25 @@ services:
         soft: 65536
         hard: 65536
 
+  jupyter:
+    image: jupyter/pyspark-notebook:latest
+    container_name: jupyter
+    restart: always
+    ports:
+      - "8888:8888"
+      - "4040:4040"
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - SPARK_OPTS=--driver-java-options=-Xms1024M --driver-java-options=-Xmx4096M --driver-java-options=-Dlog4j.log4j.configuration=file:/usr/local/spark/conf/log4j.properties
+    volumes:
+      - ./notebooks:/home/jovyan/work
+      - ./Etapa 1:/home/jovyan/work/data
+    depends_on:
+      - postgres
+      - spark-master
+      - spark-worker
+    command: start.sh jupyter lab --LabApp.token='' --LabApp.password='' --ip=0.0.0.0 --port=8888 --allow-root --no-browser
+
 volumes:
   pgdata:
   hadoop_namenode:

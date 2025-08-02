@@ -67,6 +67,127 @@ educacionit/
 
 > 📖 **Guía completa de instalación**: Ver [GUIA_INSTALACION.md](GUIA_INSTALACION.md) para instrucciones detalladas paso a paso.
 
+### 🐧 Instalación de WSL (Windows Subsystem for Linux)
+
+Si usas **Windows 10/11**, es altamente recomendado instalar WSL para una mejor experiencia:
+
+#### **Método 1: Instalación automática (Recomendado)**
+```bash
+# Abrir PowerShell como Administrador y ejecutar:
+wsl --install
+```
+
+#### **Método 2: Instalación manual**
+1. **Habilitar características de Windows:**
+   ```bash
+   # En PowerShell como Administrador:
+   dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+   dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+   ```
+
+2. **Reiniciar la computadora**
+
+3. **Descargar e instalar WSL2:**
+   - Descargar: https://aka.ms/wsl2kernel
+   - Instalar el paquete descargado
+
+4. **Establecer WSL2 como predeterminado:**
+   ```bash
+   wsl --set-default-version 2
+   ```
+
+5. **Instalar Ubuntu:**
+   ```bash
+   wsl --install -d Ubuntu
+   ```
+
+#### **Configuración inicial de Ubuntu:**
+```bash
+# Crear usuario y contraseña cuando se solicite
+# Actualizar el sistema
+sudo apt update && sudo apt upgrade -y
+
+# Instalar herramientas básicas
+sudo apt install curl wget git -y
+```
+
+#### **Instalar Docker en WSL:**
+```bash
+# Agregar repositorio oficial de Docker
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Instalar Docker
+sudo apt update
+sudo apt install docker-ce docker-ce-cli containerd.io
+
+# Agregar usuario al grupo docker
+sudo usermod -aG docker $USER
+
+# Iniciar Docker
+sudo service docker start
+```
+
+#### **Instalar Docker Compose:**
+```bash
+# Descargar Docker Compose
+sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+# Dar permisos de ejecución
+sudo chmod +x /usr/local/bin/docker-compose
+
+# Verificar instalación
+docker-compose --version
+```
+
+#### **Configurar acceso a archivos de Windows:**
+```bash
+# Los archivos de Windows están disponibles en /mnt/c/
+# Ejemplo: /mnt/c/Users/TuUsuario/Documents/
+```
+
+#### **Solución de problemas comunes en WSL:**
+
+**❌ Error: "WSL is not installed"**
+```bash
+# Verificar si WSL está habilitado
+wsl --list --verbose
+```
+
+**❌ Error: "Docker daemon not running"**
+```bash
+# Iniciar Docker en WSL
+sudo service docker start
+
+# Verificar estado
+sudo service docker status
+```
+
+**❌ Error: "Permission denied"**
+```bash
+# Agregar usuario al grupo docker
+sudo usermod -aG docker $USER
+
+# Reiniciar sesión o ejecutar
+newgrp docker
+```
+
+**❌ Problemas de rendimiento en WSL2:**
+```bash
+# Crear archivo de configuración
+sudo nano /etc/wsl.conf
+
+# Agregar estas líneas:
+[automount]
+enabled = true
+root = /mnt/
+options = "metadata,umask=22,fmask=11"
+
+[boot]
+command = service docker start
+```
+
 ### Pasos de Instalación
 
 1. **Clonar el repositorio:**
