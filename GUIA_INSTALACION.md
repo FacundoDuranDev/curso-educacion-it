@@ -20,31 +20,6 @@
 ```bash
 # Abrir PowerShell como Administrador y ejecutar:
 wsl --install
-```
-
-#### Instalación manual:
-1. **Habilitar características de Windows:**
-   ```bash
-   # En PowerShell como Administrador:
-   dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
-   dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
-   ```
-
-2. **Reiniciar la computadora**
-
-3. **Descargar e instalar WSL2:**
-   - Descargar: https://aka.ms/wsl2kernel
-   - Instalar el paquete descargado
-
-4. **Establecer WSL2 como predeterminado:**
-   ```bash
-   wsl --set-default-version 2
-   ```
-
-5. **Instalar Ubuntu:**
-   ```bash
-   wsl --install -d Ubuntu
-   ```
 
 #### Configuración inicial de Ubuntu:
 ```bash
@@ -77,18 +52,8 @@ sudo apt install curl wget git -y
 # Actualizar repositorios
 sudo apt update
 
-# Instalar dependencias
-sudo apt install apt-transport-https ca-certificates curl gnupg lsb-release
-
-# Agregar clave GPG oficial de Docker
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-
-# Configurar repositorio estable
-echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-# Instalar Docker Engine
-sudo apt update
-sudo apt install docker-ce docker-ce-cli containerd.io
+# Instalar docker-compose
+sudo apt install docker-compose
 
 # Agregar usuario al grupo docker
 sudo usermod -aG docker $USER
@@ -103,13 +68,10 @@ docker --version
 
 #### WSL2 (Windows):
 ```bash
-# Instalar Docker en WSL2
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-
-echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+# Instalar Docker en WS
 
 sudo apt update
-sudo apt install docker-ce docker-ce-cli containerd.io
+sudo apt install docker-compose
 
 # Agregar usuario al grupo docker
 sudo usermod -aG docker $USER

@@ -1,0 +1,105 @@
+erDiagram
+    clientes {
+        int id PK
+        varchar provincia
+        varchar nombre_y_apellido
+        text domicilio
+        varchar telefono
+        int edad
+        varchar localidad
+        varchar x
+        varchar y
+        date fecha_alta
+        varchar usuario_alta
+        date fecha_ultima_modificacion
+        varchar usuario_ultima_modificacion
+        int marca_baja
+    }
+    
+    sucursales {
+        int id PK
+        varchar sucursal
+        text direccion
+        varchar localidad
+        varchar provincia
+        varchar latitud
+        varchar longitud
+    }
+    
+    tipos_gasto {
+        int id_tipo_gasto PK
+        varchar descripcion
+        decimal monto_aproximado
+    }
+    
+    gastos {
+        int id_gasto PK
+        int id_sucursal FK
+        int id_tipo_gasto FK
+        date fecha
+        decimal monto
+    }
+    
+    productos {
+        int id_producto PK
+        varchar concepto
+        varchar tipo
+        decimal precio
+    }
+    
+    proveedores {
+        int id_proveedor PK
+        varchar nombre
+        text address
+        varchar city
+        varchar state
+        varchar country
+        varchar departamen
+    }
+    
+    compras {
+        int id_compra PK
+        date fecha
+        int id_producto FK
+        int cantidad
+        decimal precio
+        int id_proveedor FK
+    }
+    
+    empleados {
+        int id_empleado PK
+        varchar apellido
+        varchar nombre
+        varchar sucursal
+        varchar sector
+        varchar cargo
+        decimal salario
+    }
+    
+    canal_venta {
+        int codigo PK
+        varchar descripcion
+    }
+    
+    ventas {
+        int id_venta PK
+        date fecha
+        date fecha_entrega
+        int id_canal FK
+        int id_cliente FK
+        int id_sucursal FK
+        int id_empleado FK
+        int id_producto FK
+        decimal precio
+        int cantidad
+    }
+    
+    ventas ||--o{ clientes : "tiene"
+    ventas ||--o{ sucursales : "realizada_en"
+    ventas ||--o{ productos : "incluye"
+    ventas ||--o{ empleados : "vendida_por"
+    ventas ||--o{ canal_venta : "a_través_de"
+    gastos ||--o{ sucursales : "generado_en"
+    gastos ||--o{ tipos_gasto : "tipo"
+    compras ||--o{ productos : "de"
+    compras ||--o{ proveedores : "a"

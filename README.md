@@ -114,32 +114,18 @@ sudo apt install curl wget git -y
 
 #### **Instalar Docker en WSL:**
 ```bash
-# Agregar repositorio oficial de Docker
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-
-echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
 # Instalar Docker
 sudo apt update
-sudo apt install docker-ce docker-ce-cli containerd.io
+sudo apt install docker-compose
 
 # Agregar usuario al grupo docker
 sudo usermod -aG docker $USER
 
 # Iniciar Docker
 sudo service docker start
-```
-
-#### **Instalar Docker Compose:**
-```bash
-# Descargar Docker Compose
-sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-
-# Dar permisos de ejecución
-sudo chmod +x /usr/local/bin/docker-compose
-
 # Verificar instalación
 docker-compose --version
+
 ```
 
 #### **Configurar acceso a archivos de Windows:**
@@ -258,7 +244,7 @@ Este repositorio está diseñado para el curso de Data Engineering. Las contribu
 
 ## 📄 Licencia
 
-Este proyecto está bajo la licencia MIT. Ver el archivo `LICENSE` para más detalles.
+Este proyecto está bajo la licencia de Educacion IT.
 
 ## 📞 Contacto
 
