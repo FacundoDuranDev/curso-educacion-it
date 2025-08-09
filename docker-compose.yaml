@@ -169,72 +169,7 @@ services:
     networks:
       - hadoop-network
 
-  # Hive Metastore
-  hive-metastore:
-    image: bde2020/hive-metastore:2.3.2-postgresql-metastore
-    container_name: hive-metastore
-    restart: unless-stopped
-    depends_on:
-      postgres:
-        condition: service_healthy
-    ports:
-      - "9083:9083"
-    environment:
-      - DB_DRIVER=postgres
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_NAME=metastore
-      - DB_USER=admin
-      - DB_PASS=admin
-    volumes:
-      - hive_warehouse:/opt/hive/data/warehouse
-      - hive_logs:/opt/hive/logs
 
-    networks:
-      - hadoop-network
-
-    mem_limit: 1g
-    cpus: 0.5
-    healthcheck:
-      test: ["CMD", "netstat", "-an", "|", "grep", "9083"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-
-  # Hive Server2
-  hive-server:
-    image: bde2020/hive-server:2.3.2-postgresql-metastore
-    container_name: hive-server
-    restart: unless-stopped
-    depends_on:
-      hive-metastore:
-        condition: service_healthy
-      hadoop-namenode:
-        condition: service_healthy
-    ports:
-      - "10000:10000"
-      - "10002:10002"
-    environment:
-      - CORE_CONF_fs_defaultFS=hdfs://hadoop-namenode:8020
-      - CORE_CONF_hive_metastore_warehouse_dir=hdfs://hadoop-namenode:8020/user/hive/warehouse
-    volumes:
-      - hive_warehouse:/opt/hive/data/warehouse
-      - hive_logs:/opt/hive/logs
-      - ./Etapa 1:/opt/hive/data
-    ulimits:
-      nofile:
-        soft: 65536
-        hard: 65536
-    networks:
-      - hadoop-network
-    command: ["hive", "--service", "hiveserver2"]
-    mem_limit: 2g
-    cpus: 1.0
-    healthcheck:
-      test: ["CMD", "netstat", "-an", "|", "grep", "10000"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
 
   # Jupyter Lab
   jupyter:
@@ -257,8 +192,6 @@ services:
       postgres:
         condition: service_healthy
       spark-master:
-        condition: service_healthy
-      hive-metastore:
         condition: service_healthy
     command: start.sh jupyter lab --LabApp.token='' --LabApp.password='' --ip=0.0.0.0 --port=8888 --allow-root --no-browser
     networks:
@@ -287,7 +220,4 @@ volumes:
     driver: local
   hadoop_datanode_3:
     driver: local
-  hive_warehouse:
-    driver: local
-  hive_logs:
-    driver: local
+
