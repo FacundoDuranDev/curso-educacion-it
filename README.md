@@ -1,255 +1,216 @@
-# 🚀 Data Engineering Course - EducaciónIT
+# 🚀 Entorno de Data Engineering - EducaciónIT
 
-Repositorio completo para el curso de **Ingeniería de Datos** con PostgreSQL, Docker y Big Data.
+Este proyecto proporciona un entorno completo de Data Engineering con todas las herramientas necesarias para el curso.
 
-## 📋 Descripción
-
-Este proyecto contiene todo el material necesario para el curso de Data Engineering, incluyendo:
-- Base de datos PostgreSQL con datos reales
-- Scripts de configuración y carga de datos
-- Ejercicios prácticos de SQL
-- Configuración de Docker para Big Data
-- Datasets de ejemplo para análisis
-
-## 🏗️ Arquitectura del Proyecto
-
-```
-educacionit/
-├── docker-compose.yaml          # Configuración de servicios Docker
-├── Etapa 1/                     # Datasets CSV originales
-│   ├── Clientes.csv
-│   ├── Sucursales.csv
-│   ├── Gastos.csv
-│   ├── Compras.csv
-│   ├── Productos.csv
-│   ├── Proveedores.csv
-│   ├── Empleados.csv
-│   ├── CanalDeVenta.csv
-│   └── Venta.csv
-├── scripts/                      # Scripts de configuración
-│   ├── create_tables.sql        # Creación de tablas
-│   ├── load_data.sql            # Carga de datos
-│   └── ejercicios_clase.sql     # Ejercicios prácticos
-└── README.md                    # Este archivo
-```
-
-## 🛠️ Tecnologías Utilizadas
+## 📋 Servicios Incluidos
 
 - **PostgreSQL 15** - Base de datos relacional
-- **Apache Hadoop 3.2.1** - Framework de Big Data
-- **Apache Spark 3.1.1** - Procesamiento distribuido
-- **Apache Hive 2.3.2** - Data warehouse
-- **Python 3.9+** - Análisis de datos y ETL
+- **HDFS 3.2.1** - Sistema de archivos distribuido
+- **Apache Hive 3.1.3** - Data warehouse sobre Hadoop
+- **Apache Spark 3.1.1** - Motor de procesamiento distribuido
 - **Jupyter Lab** - Entorno de desarrollo interactivo
-- **Docker & Docker Compose** - Containerización
 
-## 📊 Datasets Incluidos
-
-| Tabla | Registros | Descripción |
-|-------|-----------|-------------|
-| Clientes | 3,407 | Información de clientes |
-| Sucursales | 31 | Ubicaciones de sucursales |
-| Gastos | 8,640 | Gastos por sucursal |
-| Compras | 11,539 | Compras a proveedores |
-| Productos | 291 | Catálogo de productos |
-| Proveedores | 14 | Información de proveedores |
-| Empleados | 249 | Datos de empleados |
-| Canal de Venta | 3 | Canales de venta |
-| Ventas | 46,645 | Transacciones de venta |
-
-**Total: 70,823 registros**
-
-## 🚀 Instalación y Configuración
+## 🛠️ Instalación Rápida
 
 ### Prerrequisitos
 - Docker y Docker Compose instalados
-- Git
+- Mínimo 8GB RAM (16GB recomendado)
+- 20GB espacio libre en disco
 
-> 📖 **Guía completa de instalación**: Ver [GUIA_INSTALACION.md](GUIA_INSTALACION.md) para instrucciones detalladas paso a paso.
-> 🔧 **Variables de entorno**: Ver [GUIA_VARIABLES_ENTORNO.md](GUIA_VARIABLES_ENTORNO.md) para evitar problemas de configuración.
+### Configuración Automática (Recomendado)
 
-### 🐧 Instalación de WSL (Windows Subsystem for Linux)
-
-Si usas **Windows 10/11**, es altamente recomendado instalar WSL para una mejor experiencia:
-
-#### **Método 1: Instalación automática (Recomendado)**
 ```bash
-# Abrir PowerShell como Administrador y ejecutar:
-wsl --install
+# 1. Clonar el repositorio
+git clone <URL_DEL_REPOSITORIO>
+cd educacionit
+
+# 2. Ejecutar configuración automática
+./scripts/setup_complete.sh
 ```
 
-#### **Método 2: Instalación manual**
-1. **Habilitar características de Windows:**
-   ```bash
-   # En PowerShell como Administrador:
-   dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
-   dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
-   ```
+### Configuración Manual
 
-2. **Reiniciar la computadora**
-
-3. **Descargar e instalar WSL2:**
-   - Descargar: https://aka.ms/wsl2kernel
-   - Instalar el paquete descargado
-
-4. **Establecer WSL2 como predeterminado:**
-   ```bash
-   wsl --set-default-version 2
-   ```
-
-5. **Instalar Ubuntu:**
-   ```bash
-   wsl --install -d Ubuntu
-   ```
-
-#### **Configuración inicial de Ubuntu:**
 ```bash
-# Crear usuario y contraseña cuando se solicite
-# Actualizar el sistema
-sudo apt update && sudo apt upgrade -y
-
-# Instalar herramientas básicas
-sudo apt install curl wget git -y
-```
-
-#### **Instalar Docker en WSL:**
-```bash
-# Instalar Docker
-sudo apt update
-sudo apt install docker-compose
-
-# Agregar usuario al grupo docker
-sudo usermod -aG docker $USER
-
-# Iniciar Docker
-sudo service docker start
-# Verificar instalación
-docker-compose --version
-
-```
-
-#### **Configurar acceso a archivos de Windows:**
-```bash
-# Los archivos de Windows están disponibles en /mnt/c/
-# Ejemplo: /mnt/c/Users/TuUsuario/Documents/
-```
-
-#### **Solución de problemas comunes en WSL:**
-
-**❌ Error: "WSL is not installed"**
-```bash
-# Verificar si WSL está habilitado
-wsl --list --verbose
-```
-
-**❌ Error: "Docker daemon not running"**
-```bash
-# Iniciar Docker en WSL
-sudo service docker start
-
-# Verificar estado
-sudo service docker status
-```
-
-**❌ Error: "Permission denied"**
-```bash
-# Agregar usuario al grupo docker
-sudo usermod -aG docker $USER
-
-# Reiniciar sesión o ejecutar
-newgrp docker
-```
-
-**❌ Problemas de rendimiento en WSL2:**
-```bash
-# Crear archivo de configuración
-sudo nano /etc/wsl.conf
-
-# Agregar estas líneas:
-[automount]
-enabled = true
-root = /mnt/
-options = "metadata,umask=22,fmask=11"
-
-[boot]
-command = service docker start
-```
-
-### Pasos de Instalación
-
-1. **Clonar el repositorio:**
-```bash
-git clone https://github.com/FacundoDuranDev/curso-educacion-it.git
-cd curso-educacion-it
-```
-
-2. **Levantar todos los servicios Docker:**
-```bash
+# 1. Iniciar todos los servicios
 docker-compose up -d
-```
 
-3. **Crear y cargar la base de datos:**
-```bash
-chmod +x scripts/setup_database.sh
+# 2. Esperar a que se inicien (5-10 minutos)
+# 3. Configurar base de datos
 ./scripts/setup_database.sh
+
+# 4. Configurar HDFS
+./scripts/init_hive_hdfs.sh
+
+# 5. Configurar Hive (cuando esté listo)
+./scripts/setup_hive_complete.sh
 ```
 
-4. **Acceder a Jupyter Lab:**
-   - Abrir navegador en: http://localhost:8888
-   - Abrir notebook: `01_introduccion_data_engineering.ipynb`
+## 🌐 Acceso a los Servicios
 
-5. **Conectar a PostgreSQL:**
+| Servicio | URL/Puerto | Descripción |
+|----------|------------|-------------|
+| **Jupyter Lab** | http://localhost:8888 | Entorno de desarrollo principal |
+| **HDFS Web UI** | http://localhost:9870 | Interfaz web de HDFS |
+| **Spark Master** | http://localhost:8080 | Interfaz web de Spark |
+| **Spark Worker** | http://localhost:8081 | Interfaz web del Worker |
+| **PostgreSQL** | localhost:5432 | Base de datos |
+| **HiveServer2** | localhost:10000 | Servidor de Hive |
+
+## 🔗 Conexiones
+
+### PostgreSQL
 ```bash
 psql -h localhost -p 5432 -U admin -d educacionit
 ```
 
-### 🌐 Interfaces Web Disponibles
-
-| Servicio | URL | Descripción |
-|----------|-----|-------------|
-| **Jupyter Lab** | http://localhost:8888 | Entorno de desarrollo Python |
-| **Spark Master** | http://localhost:8080 | Interfaz de Spark |
-| **Hadoop Namenode** | http://localhost:9870 | Interfaz de HDFS |
-| **Spark Worker** | http://localhost:8081 | Interfaz del worker de Spark |
-
-## 📚 Ejercicios y Prácticas
-
-### Ejercicios Incluidos
-- Exploración de datos
-- Análisis de calidad de datos
-- Consultas SQL complejas
-- Normalización de datos
-- Análisis de relaciones entre tablas
-- ETL y transformaciones
-
-### Ejecutar Ejercicios
+### Hive (Beeline)
 ```bash
+docker exec -it hive-server beeline -u jdbc:hive2://localhost:10000
+```
+
+### HDFS
+```bash
+docker exec -it hadoop-namenode hdfs dfs -ls /
+```
+
+## 📊 Datos del Proyecto
+
+El proyecto incluye datos de ejemplo en la carpeta `Etapa 1/`:
+
+- **Clientes.csv** - 3,407 clientes con información geográfica
+- **Ventas.csv** - 46,645 transacciones de ventas
+- **Productos.csv** - 291 productos con categorías
+- **Sucursales.csv** - 31 sucursales
+- **Empleados.csv** - 249 empleados
+- **CanalDeVenta.csv** - 3 canales de venta
+
+## 🎯 Ejercicios del Curso
+
+### PostgreSQL
+```bash
+# Ejecutar ejercicios de SQL
 psql -h localhost -p 5432 -U admin -d educacionit -f scripts/ejercicios_clase.sql
 ```
 
-## 🐳 Servicios Docker Disponibles
+### Hive
+```bash
+# Conectar a Hive
+docker exec -it hive-server beeline -u jdbc:hive2://localhost:10000
 
-- **PostgreSQL** (puerto 5432) - Base de datos principal
-- **Hadoop Namenode** (puerto 9870) - Sistema de archivos distribuido
-- **Hadoop Datanode** - Almacenamiento de datos
-- **Spark Master** (puerto 8080) - Procesamiento de datos
-- **Spark Worker** (puerto 8081) - Nodos de procesamiento
-- **Hive Server** - Data warehouse
+# Usar base de datos retail
+USE retail;
 
+# Ver tablas disponibles
+SHOW TABLES;
 
+# Ejemplo de consulta
+SELECT COUNT(*) FROM clientes;
+```
 
-## 🤝 Contribuciones
+### Spark en Jupyter
+```python
+# En Jupyter Lab, crear un nuevo notebook y ejecutar:
+from pyspark.sql import SparkSession
 
-Este repositorio está diseñado para el curso de Data Engineering. Las contribuciones son bienvenidas para mejorar el material educativo.
+spark = SparkSession.builder \
+    .appName("DataEngineering") \
+    .config("spark.sql.warehouse.dir", "/user/hive/warehouse") \
+    .enableHiveSupport() \
+    .getOrCreate()
 
-## 📄 Licencia
+# Leer datos de Hive
+df_ventas = spark.sql("SELECT * FROM retail.ventas LIMIT 10")
+df_ventas.show()
+```
 
-Este proyecto está bajo la licencia de Educacion IT.
+## 🛠️ Comandos Útiles
 
-## 📞 Contacto
+### Gestión de Contenedores
+```bash
+# Ver estado de los servicios
+docker-compose ps
 
-Para preguntas sobre el curso o el material, contactar al instructor.
+# Ver logs de un servicio
+docker logs <nombre-servicio>
+
+# Reiniciar un servicio
+docker-compose restart <nombre-servicio>
+
+# Detener todos los servicios
+docker-compose down
+
+# Detener y eliminar volúmenes
+docker-compose down -v
+```
+
+### Verificación de Servicios
+```bash
+# Verificar PostgreSQL
+docker exec -it postgres psql -U admin -d educacionit -c "SELECT COUNT(*) FROM clientes;"
+
+# Verificar HDFS
+docker exec -it hadoop-namenode hdfs dfsadmin -report
+
+# Verificar Hive
+docker exec -it hive-server beeline -u jdbc:hive2://localhost:10000 -e "SHOW DATABASES;"
+```
+
+## 🔧 Solución de Problemas
+
+### Hive no se conecta
+```bash
+# Verificar logs
+docker logs hive-server
+
+# Reiniciar Hive
+docker-compose restart hive-server hive-metastore
+
+# Verificar metastore
+docker exec -it postgres psql -U admin -d metastore -c "SELECT COUNT(*) FROM \"VERSION\";"
+```
+
+### HDFS no funciona
+```bash
+# Verificar estado
+docker exec -it hadoop-namenode hdfs dfsadmin -report
+
+# Reiniciar HDFS
+docker-compose restart hadoop-namenode hadoop-datanode-1 hadoop-datanode-2 hadoop-datanode-3
+```
+
+### Jupyter no carga
+```bash
+# Verificar logs
+docker logs jupyter
+
+# Reiniciar Jupyter
+docker-compose restart jupyter
+```
+
+## 📚 Recursos Adicionales
+
+- [Guía de Instalación Completa](GUIA_INSTALACION_COMPLETA.md)
+- [Guía de Hive](GUIA_HIVE.md)
+- [Guía de HDFS](GUIA_HDFS.md)
+- [Guía de Spark](GUIA_OLAP.md)
+- [Ejercicios de Calidad de Datos](EJERCICIOS_CALIDAD_DATOS.md)
+
+## 🆘 Soporte
+
+Si encuentras problemas:
+
+1. Verifica que Docker esté ejecutándose
+2. Asegúrate de tener suficiente memoria RAM (mínimo 8GB)
+3. Revisa los logs del servicio problemático
+4. Ejecuta `./scripts/setup_complete.sh` para reconfigurar todo
+
+## 📝 Notas de Versión
+
+- **Hive 3.1.3** - Versión estable con soporte completo para PostgreSQL
+- **Spark 3.1.1** - Compatible con Hadoop 3.2.1
+- **PostgreSQL 15** - Última versión estable
+- **Jupyter Lab** - Entorno moderno para desarrollo
 
 ---
 
-**Desarrollado para EducaciónIT** 🎓 
+**¡Listo para comenzar el curso de Data Engineering! 🎉** 

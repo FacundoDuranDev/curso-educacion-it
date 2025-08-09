@@ -13,14 +13,30 @@ OVERWRITE INTO TABLE clientes;
 LOAD DATA LOCAL INPATH '/data/PRODUCTOS.csv' 
 OVERWRITE INTO TABLE productos;
 
+-- Cargar datos de sucursales
+LOAD DATA LOCAL INPATH '/data/Sucursales.csv' 
+OVERWRITE INTO TABLE sucursales;
+
+-- Cargar datos de empleados
+LOAD DATA LOCAL INPATH '/data/Empleados.csv' 
+OVERWRITE INTO TABLE empleados;
+
+-- Cargar datos de canal de venta
+LOAD DATA LOCAL INPATH '/data/CanalDeVenta.csv' 
+OVERWRITE INTO TABLE canal_venta;
+
 -- Crear tabla temporal para ventas
 CREATE TABLE IF NOT EXISTS temp_ventas (
     id_venta INT,
+    fecha DATE,
+    fecha_entrega DATE,
+    id_canal INT,
     id_cliente INT,
+    id_sucursal INT,
+    id_empleado INT,
     id_producto INT,
-    cantidad INT,
-    monto_total DECIMAL(10,2),
-    fecha_venta DATE
+    precio DECIMAL(10,2),
+    cantidad INT
 )
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ',';
@@ -33,14 +49,32 @@ OVERWRITE INTO TABLE temp_ventas;
 INSERT INTO TABLE ventas PARTITION(anio, mes)
 SELECT 
     id_venta,
+    fecha,
+    fecha_entrega,
+    id_canal,
     id_cliente,
+    id_sucursal,
+    id_empleado,
     id_producto,
+    precio,
     cantidad,
-    monto_total,
-    fecha_venta,
-    YEAR(fecha_venta) as anio,
-    MONTH(fecha_venta) as mes
+    YEAR(fecha) as anio,
+    MONTH(fecha) as mes
 FROM temp_ventas;
 
 -- Limpiar tabla temporal
 DROP TABLE temp_ventas;
+
+-- Verificar datos cargados
+SELECT 'Clientes' as tabla, COUNT(*) as registros FROM clientes
+UNION ALL
+SELECT 'Productos', COUNT(*) FROM productos
+UNION ALL
+SELECT 'Sucursales', COUNT(*) FROM sucursales
+UNION ALL
+SELECT 'Empleados', COUNT(*) FROM empleados
+UNION ALL
+SELECT 'Canal de Venta', COUNT(*) FROM canal_venta
+UNION ALL
+SELECT 'Ventas', COUNT(*) FROM ventas
+ORDER BY tabla;
