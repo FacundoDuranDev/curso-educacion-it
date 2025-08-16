@@ -252,57 +252,46 @@ make clean && make
 
 ---
 
-## 📋 **SCRIPT DE LIMPIEZA UNIVERSAL**
+## 📋 **LIMPIEZA COMPLETA UNIVERSAL (COMANDOS DIRECTOS)**
 
-### **Crear archivo: `cleanup-docker-universal.sh`**
+### **⚠️ ADVERTENCIA EXTREMA:**
+**ESTOS COMANDOS ELIMINARÁN TODOS LOS DATOS DE DOCKER EN EL SISTEMA.**
+**¡ÚSALOS SOLO SI ESTÁS COMPLETAMENTE SEGURO!**
+
+### **🔍 Análisis previo (opcional)**
 ```bash
-#!/bin/bash
-
-echo "🧹 INICIANDO LIMPIEZA COMPLETA UNIVERSAL DE DOCKER..."
-echo "⚠️  ESTO ELIMINARÁ TODOS LOS DATOS DE DOCKER EN EL SISTEMA!"
-
-read -p "¿Estás seguro de que quieres continuar? (y/N): " -n 1 -r
-echo
-if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    echo "❌ Limpieza cancelada"
-    exit 1
-fi
-
-echo "🔍 Analizando estado actual de Docker..."
+# Ver cuántos elementos tienes antes de limpiar
 echo "Contenedores: $(docker ps -aq | wc -l)"
 echo "Imágenes: $(docker images -aq | wc -l)"
 echo "Volúmenes: $(docker volume ls -q | wc -l)"
 echo "Redes: $(docker network ls -q | wc -l)"
-
-echo "🛑 Deteniendo todos los contenedores..."
-docker stop $(docker ps -q) 2>/dev/null || true
-
-echo "🗑️  Eliminando contenedores..."
-docker rm $(docker ps -aq) 2>/dev/null || true
-
-echo "🖼️  Eliminando imágenes..."
-docker rmi $(docker images -aq) 2>/dev/null || true
-
-echo "💾 Eliminando volúmenes..."
-docker volume rm $(docker volume ls -q) 2>/dev/null || true
-
-echo "🌐 Eliminando redes personalizadas..."
-docker network ls --filter type=custom -q | xargs -r docker network rm 2>/dev/null || true
-
-echo "🧽 Limpieza final del sistema..."
-docker system prune -a --volumes --force
-
-echo "✅ ¡LIMPIEZA COMPLETA UNIVERSAL FINALIZADA!"
-echo "🚀 Tu sistema Docker está completamente limpio y listo para empezar desde cero"
 ```
 
-### **Dar permisos y ejecutar**
+### **🧹 Limpieza paso a paso (RECOMENDADO)**
 ```bash
-# Dar permisos de ejecución
-chmod +x cleanup-docker-universal.sh
+# 1. Detener todos los contenedores
+docker stop $(docker ps -q) 2>/dev/null || true
 
-# Ejecutar el script
-./cleanup-docker-universal.sh
+# 2. Eliminar contenedores
+docker rm $(docker ps -aq) 2>/dev/null || true
+
+# 3. Eliminar imágenes
+docker rmi $(docker images -aq) 2>/dev/null || true
+
+# 4. Eliminar volúmenes
+docker volume rm $(docker volume ls -q) 2>/dev/null || true
+
+# 5. Eliminar redes personalizadas
+docker network ls --filter type=custom -q | xargs -r docker network rm 2>/dev/null || true
+
+# 6. Limpieza final del sistema
+docker system prune -a --volumes --force
+```
+
+### **💥 Limpieza nuclear (TODO EN UNA LÍNEA)**
+```bash
+# ¡CUIDADO! Esto hace todo de una vez
+docker stop $(docker ps -q) 2>/dev/null; docker rm $(docker ps -aq) 2>/dev/null; docker rmi $(docker images -aq) 2>/dev/null; docker volume rm $(docker volume ls -q) 2>/dev/null; docker system prune -a --volumes --force
 ```
 
 ---
