@@ -27,6 +27,8 @@
 make
 ```
 
+**Nota:** El comando `make` ejecuta automáticamente `make build` seguido de `make up`, construyendo todas las imágenes y levantando el entorno completo.
+
 **Descripción Técnica**: Este comando ejecuta el Makefile que construye secuencialmente las imágenes Docker base, master, worker, history y jupyter utilizando los Dockerfiles correspondientes en cada directorio.
 
 ### Fase 2: Inicialización del Clúster
@@ -50,6 +52,22 @@ hadoop-hive-spark-…    "/opt/hadoop/bin/ent…"   master             running  
 hadoop-hive-spark-…    "/opt/hadoop/bin/ent…"   worker1            running             0.0.0.0:8042->8042/tcp
 hadoop-hive-spark-…    "/opt/hadoop/bin/ent…"   worker2            running             0.0.0.0:8043->8042/tcp
 ```
+
+---
+
+## 📚 **GUÍAS DISPONIBLES**
+
+### **Para Estudiantes:**
+- 🚀 **`GUIA_INSTALACION_RAPIDA.md`** - Instalación rápida del entorno
+- 🗄️ **`GUIA_INSTALACION_POSTGRESQL.md`** - Configuración completa de PostgreSQL con datos
+- 🔌 **`GUIA_DBEAVER_POSTGRESQL_WINDOWS.md`** - Conexión con DBeaver desde Windows
+- 📊 **`GUIA_SQL.md`** - Guía básica de sintaxis SQL
+- 🏗️ **`EJEMPLOS_NORMALIZACION.md`** - Ejemplos de normalización de bases de datos
+
+### **Para Desarrolladores:**
+- 🐳 **`COMANDOS_RAPIDOS_DOCKER.md`** - Comandos Docker útiles
+- 🐧 **`COMANDOS_BASICOS_LINUX.md`** - Comandos Linux básicos
+- 🧹 **`CLEANUP.md`** - Limpieza y mantenimiento del entorno
 
 ---
 

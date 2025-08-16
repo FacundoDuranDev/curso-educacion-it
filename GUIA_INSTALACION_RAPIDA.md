@@ -42,16 +42,21 @@ docker-compose --version
 
 ## 🚀 **Paso 3: Levantar el Entorno**
 
+### **⚠️ IMPORTANTE:**
+- **Opción Simple:** Solo levanta PostgreSQL, pero NO incluye la base de datos `educacionit` con datos
+- **Opción Completa:** Levanta todo el entorno (PostgreSQL + Hadoop + Spark + Jupyter)
+- **Para tener datos:** Debes seguir la `GUIA_INSTALACION_POSTGRESQL.md` después de levantar PostgreSQL
+
 ### **Opción Simple (Solo PostgreSQL):**
 ```bash
 # Dar permisos a los scripts
 chmod +x scripts/*.sh
 
 # Levantar solo PostgreSQL
-docker-compose -f docker-compose.yml up -d postgres
+docker-compose -f docker-compose.yml up -d metastore
 
 # Verificar que esté funcionando
-docker ps | grep postgres
+docker ps | grep metastore
 ```
 
 ### **Opción Completa (PostgreSQL + Hadoop + Spark):**
@@ -73,7 +78,7 @@ docker-compose ps
 ### **Verificar PostgreSQL:**
 ```bash
 # Conectar a PostgreSQL
-docker exec -it postgres psql -U admin -d educacionit -c "SELECT version();"
+docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "SELECT version();"
 ```
 
 **Deberías ver:**
@@ -83,7 +88,7 @@ PostgreSQL 15.13 (Debian 15.13-1.pgdg120+1) on x86_64-pc-linux-gnu
 
 ### **Verificar que las tablas estén creadas:**
 ```bash
-docker exec -it postgres psql -U admin -d educacionit -c "\dt"
+docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\dt"
 ```
 
 **Deberías ver las tablas:**
@@ -98,6 +103,13 @@ docker exec -it postgres psql -U admin -d educacionit -c "\dt"
 ## 📊 **Paso 5: Conectar desde DBeaver**
 
 ### **Configuración de conexión:**
+- **Host:** `localhost`
+- **Puerto:** `5432`
+- **Base de datos:** `educacionit`
+- **Usuario:** `admin`
+- **Contraseña:** `admin123`
+
+**Nota:** Primero debes crear la base de datos `educacionit` y el usuario `admin` siguiendo la `GUIA_INSTALACION_POSTGRESQL.md`
 - **Host:** `localhost`
 - **Port:** `5432`
 - **Database:** `educacionit`
@@ -190,7 +202,7 @@ docker-compose down
 ### **Si algo no funciona:**
 ```bash
 docker-compose down
-docker-compose up -d postgres
+docker-compose up -d metastore
 ```
 
 ---
@@ -210,7 +222,7 @@ docker-compose up -d postgres
 
 ### **1. Conectar desde terminal:**
 ```bash
-docker exec -it postgres psql -U admin -d educacionit
+docker exec -it educacionit-metastore-1 psql -U admin -d educacionit
 ```
 
 ### **2. Ver las tablas disponibles:**
@@ -267,7 +279,7 @@ docker-compose down -v
 docker system prune -f
 
 # Volver a empezar
-docker-compose up -d postgres
+docker-compose up -d metastore
 ```
 
 ---
@@ -280,6 +292,24 @@ Una vez que tengas PostgreSQL funcionando, podrás:
 - ✅ Trabajar con los datos del curso
 - ✅ Practicar normalización
 - ✅ Realizar análisis de datos
+
+---
+
+---
+
+## 📚 **Guías Relacionadas**
+
+### **Para configurar la base de datos con datos:**
+- 📖 **`GUIA_INSTALACION_POSTGRESQL.md`** - Configuración completa de PostgreSQL con datos
+
+### **Para conectar desde Windows:**
+- 🔌 **`GUIA_DBEAVER_POSTGRESQL_WINDOWS.md`** - Conexión con DBeaver desde Windows
+
+### **Para aprender SQL:**
+- 📊 **`GUIA_SQL.md`** - Guía básica de sintaxis SQL
+
+### **Para entender normalización:**
+- 🏗️ **`EJEMPLOS_NORMALIZACION.md`** - Ejemplos de normalización de bases de datos
 
 ---
 
