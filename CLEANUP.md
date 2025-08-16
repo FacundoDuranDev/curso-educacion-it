@@ -196,7 +196,28 @@ docker network ls
 
 ## 🎯 **LIMPIEZA POR PROYECTO ESPECÍFICO**
 
-### **Si quieres limpiar solo un proyecto específico**
+### **Limpieza específica del proyecto EducacionIT**
+```bash
+# Ir al directorio del proyecto
+cd /ruta/a/curso-educacion-it
+
+# Detener y eliminar solo este proyecto
+docker-compose down -v --remove-orphans
+
+# Eliminar imágenes específicas del proyecto
+docker images | grep "hadoop-hive-spark" | awk '{print $3}' | xargs -r docker rmi
+
+# Eliminar contenedores específicos del proyecto
+docker ps -a | grep "educacionit" | awk '{print $1}' | xargs -r docker rm
+
+# Eliminar volúmenes específicos del proyecto
+docker volume ls | grep "educacionit" | awk '{print $2}' | xargs -r docker volume rm
+
+# Eliminar red específica del proyecto
+docker network ls | grep "educacionit" | awk '{print $1}' | xargs -r docker network rm
+```
+
+### **Si quieres limpiar solo un proyecto específico (genérico)**
 ```bash
 # Ir al directorio del proyecto
 cd /ruta/al/proyecto
@@ -215,6 +236,18 @@ docker ps -a --filter "label=com.docker.compose.project=nombre-proyecto" -q | xa
 
 # Eliminar imágenes con etiquetas específicas
 docker images --filter "label=com.docker.compose.project=nombre-proyecto" -q | xargs -r docker rmi
+```
+
+### **Limpieza usando Makefile del proyecto EducacionIT**
+```bash
+# Limpiar solo imágenes del proyecto
+make clean
+
+# Detener todo el entorno
+make down
+
+# Limpiar y reconstruir todo
+make clean && make
 ```
 
 ---
@@ -312,6 +345,13 @@ docker volume rm $(docker volume ls -q) 2>/dev/null
 - ✅ **Código fuente** de tus proyectos
 - ✅ **Archivos de configuración** (docker-compose.yml, Dockerfiles)
 
+### **⚠️ IMPORTANTE - Base de datos educacionit:**
+- ❌ **Se pierde** la base de datos `educacionit` con todos los datos
+- ❌ **Se pierde** el usuario `admin` y sus permisos
+- ✅ **Se mantiene** el código SQL para recrear la base
+- ✅ **Se mantienen** los archivos CSV con los datos
+- 🔄 **Para recuperar:** Seguir `GUIA_INSTALACION_POSTGRESQL.md`
+
 ### **Tiempo estimado de reconstrucción**
 - ⏱️ **Depende del proyecto**: 5 minutos a 1 hora
 - ⏱️ **Primera descarga**: Puede tomar más tiempo
@@ -396,3 +436,26 @@ docker system df
 ```
 
 **Resultado esperado**: Solo deberías ver contenedores, imágenes y redes del sistema Docker base, nada personalizado.
+
+---
+
+## 📚 **GUÍAS RELACIONADAS DEL PROYECTO**
+
+### **Después de la limpieza, puedes:**
+- 🚀 **`GUIA_INSTALACION_RAPIDA.md`** - Reinstalar el entorno rápidamente
+- 🗄️ **`GUIA_INSTALACION_POSTGRESQL.md`** - Configurar PostgreSQL con datos
+- 🔌 **`GUIA_DBEAVER_POSTGRESQL_WINDOWS.md`** - Conectar con DBeaver
+- 📊 **`GUIA_SQL.md`** - Aprender SQL básico
+- 🏗️ **`EJEMPLOS_NORMALIZACION.md`** - Entender normalización
+
+### **Comandos rápidos para reinstalar:**
+```bash
+# Opción 1: Todo en uno (recomendado para estudiantes)
+make
+
+# Opción 2: Solo PostgreSQL
+docker-compose up -d metastore
+
+# Opción 3: Todo el entorno
+docker-compose up -d
+```

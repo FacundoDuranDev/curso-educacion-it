@@ -43,7 +43,7 @@ ls -la scripts/
 - ✅ `docker-compose.yml`
 - ✅ `data/etapa1/` (con archivos CSV)
 - ✅ `scripts/create_tables.sql`
-- ✅ `scripts/load_data_sql.sql`
+- ✅ `scripts/load_data_fixed.sql` (script corregido para cargar datos)
 
 ---
 
@@ -162,8 +162,11 @@ docker exec -it educacionit-metastore-1 ls -la /tmp/etapa1/
 
 ### **4.2 Crear Todas las Tablas**
 ```bash
+# Copiar script de creación de tablas al contenedor
+docker cp scripts/create_tables.sql educacionit-metastore-1:/tmp/
+
 # Ejecutar script de creación de tablas
-docker exec -i educacionit-metastore-1 psql -U admin -d educacionit < scripts/create_tables.sql
+docker exec -it educacionit-metastore-1 psql -U postgres -d educacionit -f /tmp/create_tables.sql
 ```
 
 **Resultado esperado:**
@@ -203,14 +206,27 @@ docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\dt"
 
 ## 📊 **Paso 5: Cargar Datos**
 
-### **5.1 Cargar Clientes**
+### **5.1 Cargar Datos (Método Recomendado)**
 ```bash
-docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\copy clientes FROM '/tmp/etapa1/Clientes.csv' WITH (FORMAT csv, DELIMITER ';', HEADER true, ENCODING 'UTF8');"
+# Copiar script de carga de datos corregido al contenedor
+docker cp scripts/load_data_fixed.sql educacionit-metastore-1:/tmp/
+
+# Ejecutar script completo de carga de datos
+docker exec -it educacionit-metastore-1 psql -U postgres -d educacionit -f /tmp/load_data_fixed.sql
 ```
 
 **Resultado esperado:**
 ```
 COPY 3407
+COPY 31
+COPY 4
+COPY 8640
+COPY 11539
+COPY 291
+COPY 14
+INSERT 0 249
+COPY 3
+COPY 46645
 ```
 
 ### **5.2 Cargar Sucursales**
@@ -230,7 +246,7 @@ docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\copy t
 
 **Resultado esperado:**
 ```
-COPY 6
+COPY 4
 ```
 
 ### **5.4 Cargar Gastos**
@@ -240,7 +256,7 @@ docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\copy g
 
 **Resultado esperado:**
 ```
-COPY 8642
+COPY 8640
 ```
 
 ### **5.5 Cargar Compras**
@@ -250,7 +266,7 @@ docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\copy c
 
 **Resultado esperado:**
 ```
-COPY 11541
+COPY 11539
 ```
 
 ### **5.6 Cargar Productos**
@@ -270,7 +286,7 @@ docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\copy p
 
 **Resultado esperado:**
 ```
-COPY 16
+COPY 14
 ```
 
 ### **5.8 Cargar Empleados**
@@ -280,7 +296,7 @@ docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\copy e
 
 **Resultado esperado:**
 ```
-COPY 268
+INSERT 0 249
 ```
 
 ### **5.9 Cargar Canal de Venta**
@@ -300,7 +316,7 @@ docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\copy v
 
 **Resultado esperado:**
 ```
-COPY 16468
+COPY 46645
 ```
 
 ---
@@ -337,16 +353,16 @@ ORDER BY tabla;"
 ```
     tabla    | registros 
 -------------+-----------
- canal_venta |         5
+ canal_venta |         3
  clientes    |      3407
- compras     |     11541
- empleados   |       268
- gastos      |      8642
+ compras     |     11539
+ empleados   |       249
+ gastos      |      8640
  productos   |       291
- proveedores |        16
+ proveedores |        14
  sucursales  |        31
- tipos_gasto |         6
- ventas      |     16468
+ tipos_gasto |         4
+ ventas      |     46645
 ```
 
 ### **6.2 Verificar Estructura de Tablas**
@@ -427,16 +443,11 @@ docker exec -i educacionit-metastore-1 psql -U admin -d educacionit < scripts/cr
 
 # 5. Cargar datos
 echo "📊 Cargando datos..."
-docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\copy clientes FROM '/tmp/etapa1/Clientes.csv' WITH (FORMAT csv, DELIMITER ';', HEADER true, ENCODING 'UTF8');"
-docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\copy sucursales FROM '/tmp/etapa1/Sucursales.csv' WITH (FORMAT csv, DELIMITER ';', HEADER true, ENCODING 'UTF8');"
-docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\copy tipos_gasto FROM '/tmp/etapa1/TiposDeGasto.csv' WITH (FORMAT csv, DELIMITER ',', HEADER true, ENCODING 'UTF8');"
-docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\copy gastos FROM '/tmp/etapa1/Gasto.csv' WITH (FORMAT csv, DELIMITER ',', HEADER true, ENCODING 'UTF8');"
-docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\copy compras FROM '/tmp/etapa1/Compra.csv' WITH (FORMAT csv, DELIMITER ',', HEADER true, ENCODING 'UTF8');"
-docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\copy productos FROM '/tmp/etapa1/PRODUCTOS.csv' WITH (FORMAT csv, DELIMITER ',', HEADER true, ENCODING 'UTF8');"
-docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\copy proveedores FROM '/tmp/etapa1/Proveedores.csv' WITH (FORMAT csv, DELIMITER ',', HEADER true, ENCODING 'UTF8');"
-docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\copy empleados FROM '/tmp/etapa1/Empleados.csv' WITH (FORMAT csv, DELIMITER ',', HEADER true, ENCODING 'UTF8');"
-docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\copy canal_venta FROM '/tmp/etapa1/CanalDeVenta.csv' WITH (FORMAT csv, DELIMITER ',', HEADER true, ENCODING 'UTF8');"
-docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\copy ventas FROM '/tmp/etapa1/Venta.csv' WITH (FORMAT csv, DELIMITER ',', HEADER true, ENCODING 'UTF8');"
+# Copiar script de carga de datos corregido
+docker cp scripts/load_data_fixed.sql educacionit-metastore-1:/tmp/
+
+# Ejecutar script completo de carga de datos
+docker exec -it educacionit-metastore-1 psql -U postgres -d educacionit -f /tmp/load_data_fixed.sql
 
 # 6. Verificar resultado
 echo "🔍 Verificando instalación..."
@@ -457,7 +468,7 @@ echo "📊 Base de datos: educacionit"
 echo "👤 Usuario: admin"
 echo "🔑 Contraseña: admin123"
 echo "🔌 Puerto: 5432"
-echo "📈 Total de registros: ~42,000+"
+echo "📈 Total de registros: ~70,000+"
 ```
 
 ---
@@ -550,7 +561,7 @@ SELECT COUNT(*) FROM clientes;
 - [ ] Clientes: ~3,407 registros
 - [ ] Sucursales: ~31 registros
 - [ ] Productos: ~291 registros
-- [ ] Ventas: ~16,468 registros
+- [ ] Ventas: ~46,645 registros
 - [ ] Y todas las demás tablas con datos
 
 ### **✅ Conexión:**

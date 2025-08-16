@@ -174,7 +174,7 @@ docker system df
 ## 📝 **Scripts Útiles**
 ```bash
 # Configurar base de datos
-./scripts/setup_database.sh
+# Seguir la GUIA_INSTALACION_POSTGRESQL.md para configurar la base de datos
 
 # Ejecutar ejercicios
 ./scripts/ejercicios_clase.sql

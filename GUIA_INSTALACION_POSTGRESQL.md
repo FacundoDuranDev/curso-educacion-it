@@ -76,12 +76,20 @@ GRANT ALL PRIVILEGES ON DATABASE educacionit TO admin;
 
 ### **4.1 Copiar archivos CSV al contenedor**
 ```bash
+# Copiar archivos CSV desde el directorio data/etapa1/ del proyecto
 docker cp data/etapa1/. educacionit-metastore-1:/tmp/etapa1/
+
+# Verificar que se copiaron correctamente
+docker exec -it educacionit-metastore-1 ls -la /tmp/etapa1/
 ```
 
 ### **4.2 Crear todas las tablas**
 ```bash
-docker exec -i educacionit-metastore-1 psql -U admin -d educacionit < scripts/create_tables.sql
+# Copiar script de creación de tablas al contenedor
+docker cp scripts/create_tables.sql educacionit-metastore-1:/tmp/
+
+# Ejecutar script de creación de tablas
+docker exec -it educacionit-metastore-1 psql -U postgres -d educacionit -f /tmp/create_tables.sql
 ```
 
 **Resultado esperado:**
@@ -121,54 +129,54 @@ docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\dt"
 
 ## 📊 **Paso 5: Cargar Datos**
 
-### **5.1 Cargar Clientes**
+### **5.1 Cargar Datos (Método Recomendado)**
 ```bash
-docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\copy clientes FROM '/tmp/etapa1/Clientes.csv' WITH (FORMAT csv, DELIMITER ';', HEADER true, ENCODING 'UTF8');"
+# Copiar script de carga de datos corregido al contenedor
+docker cp scripts/load_data_fixed.sql educacionit-metastore-1:/tmp/
+
+# Ejecutar script completo de carga de datos
+docker exec -it educacionit-metastore-1 psql -U postgres -d educacionit -f /tmp/load_data_fixed.sql
 ```
 
-### **5.2 Cargar Sucursales**
-```bash
-docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\copy sucursales FROM '/tmp/etapa1/Sucursales.csv' WITH (FORMAT csv, DELIMITER ';', HEADER true, ENCODING 'UTF8');"
+**Resultado esperado:**
+```
+COPY 3407
+COPY 31
+COPY 4
+COPY 8640
+COPY 11539
+COPY 291
+COPY 14
+INSERT 0 249
+COPY 3
+COPY 46645
 ```
 
-### **5.3 Cargar Tipos de Gasto**
+### **5.2 Verificar Carga de Datos**
 ```bash
-docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\copy tipos_gasto FROM '/tmp/etapa1/TiposDeGasto.csv' WITH (FORMAT csv, DELIMITER ',', HEADER true, ENCODING 'UTF8');"
-```
-
-### **5.4 Cargar Gastos**
-```bash
-docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\copy gastos FROM '/tmp/etapa1/Gasto.csv' WITH (FORMAT csv, DELIMITER ',', HEADER true, ENCODING 'UTF8');"
-```
-
-### **5.5 Cargar Compras**
-```bash
-docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\copy compras FROM '/tmp/etapa1/Compra.csv' WITH (FORMAT csv, DELIMITER ',', HEADER true, ENCODING 'UTF8');"
-```
-
-### **5.6 Cargar Productos**
-```bash
-docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\copy productos FROM '/tmp/etapa1/PRODUCTOS.csv' WITH (FORMAT csv, DELIMITER ',', HEADER true, ENCODING 'UTF8');"
-```
-
-### **5.7 Cargar Proveedores**
-```bash
-docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\copy proveedores FROM '/tmp/etapa1/Proveedores.csv' WITH (FORMAT csv, DELIMITER ',', HEADER true, ENCODING 'UTF8');"
-```
-
-### **5.8 Cargar Empleados**
-```bash
-docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\copy empleados FROM '/tmp/etapa1/Empleados.csv' WITH (FORMAT csv, DELIMITER ',', HEADER true, ENCODING 'UTF8');"
-```
-
-### **5.9 Cargar Canal de Venta**
-```bash
-docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\copy canal_venta FROM '/tmp/etapa1/CanalDeVenta.csv' WITH (FORMAT csv, DELIMITER ',', HEADER true, ENCODING 'UTF8');"
-```
-
-### **5.10 Cargar Ventas**
-```bash
-docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\copy ventas FROM '/tmp/etapa1/Venta.csv' WITH (FORMAT csv, DELIMITER ',', HEADER true, ENCODING 'UTF8');"
+# Verificar conteo de registros en todas las tablas
+docker exec -it educacionit-metastore-1 psql -U postgres -d educacionit -c "
+SELECT 
+    'clientes' as tabla, COUNT(*) as registros FROM clientes
+UNION ALL
+SELECT 'sucursales', COUNT(*) FROM sucursales
+UNION ALL
+SELECT 'tipos_gasto', COUNT(*) FROM tipos_gasto
+UNION ALL
+SELECT 'gastos', COUNT(*) FROM gastos
+UNION ALL
+SELECT 'compras', COUNT(*) FROM compras
+UNION ALL
+SELECT 'productos', COUNT(*) FROM productos
+UNION ALL
+SELECT 'proveedores', COUNT(*) FROM proveedores
+UNION ALL
+SELECT 'empleados', COUNT(*) FROM empleados
+UNION ALL
+SELECT 'canal_venta', COUNT(*) FROM canal_venta
+UNION ALL
+SELECT 'ventas', COUNT(*) FROM ventas
+ORDER BY tabla;"
 ```
 
 ---
@@ -196,10 +204,10 @@ ORDER BY tabla;"
    tabla    | registros 
 ------------+-----------
  clientes   |      3407
- empleados  |       268
+ empleados  |       249
  productos  |       292
  sucursales |        31
- ventas     |     16468
+ ventas     |     46645
 ```
 
 ---

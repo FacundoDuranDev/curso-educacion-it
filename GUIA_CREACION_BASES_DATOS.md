@@ -41,12 +41,14 @@ Imagina que PostgreSQL es como un **edificio de oficinas**:
 - **Contenido:** Tablas del sistema de Hive (DBS, TBLS, COLUMNS_V2, etc.)
 - **Usuario:** `postgres` (superusuario)
 - **Contraseña:** `jupyter`
+- **Nota:** Esta base se crea automáticamente al levantar el servicio
 
 ### **2. Base de Datos `educacionit`**
 - **Propósito:** Datos del curso de Data Engineering
 - **Contenido:** Tablas de negocio (clientes, productos, ventas, etc.)
 - **Usuario:** `admin`
 - **Contraseña:** `admin123`
+- **Nota:** Esta base debe crearse manualmente siguiendo la GUIA_INSTALACION_POSTGRESQL.md
 
 ---
 

@@ -6,43 +6,33 @@ Esta carpeta contiene todos los scripts necesarios para configurar y cargar dato
 
 ### **Scripts SQL:**
 - **`create_tables.sql`** - Crea todas las tablas de la base de datos
-- **`load_data_sql.sql`** - Carga todos los datos desde los archivos CSV
+- **`load_data_fixed.sql`** - Carga todos los datos desde los archivos CSV (script corregido)
 
 ### **Scripts Bash:**
-- **`setup_database.sh`** - Script principal que ejecuta todo el proceso
-- **`load_data.sh`** - Script alternativo solo para cargar datos
+- **`setup_complete.sh`** - Script principal que ejecuta todo el proceso (obsoleto)
+- **`load_data.sh`** - Script alternativo solo para cargar datos (obsoleto)
 
-## 🚀 Uso del Script Principal
+## 🚀 Uso de los Scripts
 
-### **Configuración Completa (Recomendado)**
+### **⚠️ IMPORTANTE:**
+Los scripts bash están obsoletos. Para configurar la base de datos, sigue la **`GUIA_INSTALACION_POSTGRESQL.md`**.
+
+### **Scripts SQL Disponibles:**
+- **`create_tables.sql`** - Crear todas las tablas
+- **`load_data_fixed.sql`** - Cargar todos los datos (script corregido)
+
+### **Proceso Manual Recomendado:**
 ```bash
-# Desde la carpeta scripts/
-./setup_database.sh
-```
+# 1. Copiar archivos CSV
+docker cp data/etapa1/. educacionit-metastore-1:/tmp/etapa1/
 
-**¿Qué hace?**
-1. ✅ Verifica que PostgreSQL esté corriendo
-2. ✅ Crea todas las tablas con índices
-3. ✅ Carga todos los datos desde los CSV
-4. ✅ Verifica que todo esté funcionando
+# 2. Crear tablas
+docker cp scripts/create_tables.sql educacionit-metastore-1:/tmp/
+docker exec -it educacionit-metastore-1 psql -U postgres -d educacionit -f /tmp/create_tables.sql
 
-### **Opciones Disponibles**
-
-```bash
-# Mostrar ayuda
-./setup_database.sh --help
-
-# Limpiar y configurar desde cero
-./setup_database.sh --clean
-
-# Solo crear tablas (sin cargar datos)
-./setup_database.sh --tables
-
-# Solo cargar datos (asumiendo tablas existentes)
-./setup_database.sh --data
-
-# Solo verificar datos existentes
-./setup_database.sh --verify
+# 3. Cargar datos
+docker cp scripts/load_data_fixed.sql educacionit-metastore-1:/tmp/
+docker exec -it educacionit-metastore-1 psql -U postgres -d educacionit -f /tmp/load_data_fixed.sql
 ```
 
 ## 📊 Estructura de la Base de Datos
@@ -78,7 +68,7 @@ docker-compose up -d metastore
 ### **2. Base de datos creada**
 ```bash
 # Conectarse a PostgreSQL
-docker exec -it hadoop-hive-spark-docker-metastore-1 psql -U jupyter -d metastore
+docker exec -it educacionit-metastore-1 psql -U postgres -d metastore
 
 # Verificar que la base existe
 \l
@@ -133,7 +123,7 @@ docker-compose up -d metastore
 ### **Error: Base de datos no existe**
 ```bash
 # Conectarse a PostgreSQL
-docker exec -it hadoop-hive-spark-docker-metastore-1 psql -U jupyter -d postgres
+docker exec -it educacionit-metastore-1 psql -U postgres -d postgres
 
 # Crear base de datos
 CREATE DATABASE metastore;
@@ -155,14 +145,23 @@ ls -la data/etapa1/
 
 ### **Comando de Verificación:**
 ```bash
-# Verificar cantidad de registros
-./setup_database.sh --verify
+# Verificar cantidad de registros manualmente
+docker exec -it educacionit-metastore-1 psql -U postgres -d educacionit -c "
+SELECT 
+    'clientes' as tabla, COUNT(*) as registros FROM clientes
+UNION ALL
+SELECT 'sucursales', COUNT(*) FROM sucursales
+UNION ALL
+SELECT 'productos', COUNT(*) FROM productos
+UNION ALL
+SELECT 'ventas', COUNT(*) FROM ventas
+ORDER BY tabla;"
 ```
 
 ### **Verificación Manual:**
 ```bash
 # Conectarse a PostgreSQL
-docker exec -it hadoop-hive-spark-docker-metastore-1 psql -U jupyter -d metastore
+docker exec -it educacionit-metastore-1 psql -U postgres -d metastore
 
 # Ver tablas
 \dt
@@ -175,28 +174,32 @@ SELECT COUNT(*) FROM clientes;
 
 ### **Primera Vez:**
 ```bash
-./setup_database.sh --clean
+# Seguir GUIA_INSTALACION_POSTGRESQL.md desde el paso 1
 ```
 
 ### **Actualizar Datos:**
 ```bash
-./setup_database.sh --data
+# Usar load_data_fixed.sql
+docker cp scripts/load_data_fixed.sql educacionit-metastore-1:/tmp/
+docker exec -it educacionit-metastore-1 psql -U postgres -d educacionit -f /tmp/load_data_fixed.sql
 ```
 
 ### **Solo Verificar:**
 ```bash
-./setup_database.sh --verify
+# Usar el comando de verificación anterior
 ```
 
 ### **Recrear Estructura:**
 ```bash
-./setup_database.sh --tables
+# Usar create_tables.sql
+docker cp scripts/create_tables.sql educacionit-metastore-1:/tmp/
+docker exec -it educacionit-metastore-1 psql -U postgres -d educacionit -f /tmp/create_tables.sql
 ```
 
 ## 📝 Notas Importantes
 
-- **Backup**: Siempre haz backup antes de usar `--clean`
-- **Permisos**: Los scripts necesitan permisos de ejecución
+- **⚠️ Scripts Bash Obsoletos**: Los scripts `.sh` ya no funcionan
+- **Guía Recomendada**: Usa `GUIA_INSTALACION_POSTGRESQL.md`
 - **Dependencias**: Las tablas se crean en el orden correcto
 - **Verificación**: Siempre verifica que los datos se cargaron correctamente
 - **Logs**: Revisa los mensajes de error si algo falla

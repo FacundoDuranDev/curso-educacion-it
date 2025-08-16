@@ -182,7 +182,7 @@ docker exec -it educacionit-metastore-1 psql -U postgres -c "\l"
 **Recrear todo desde cero:**
 ```bash
 # Seguir la guía de instalación completa
-./scripts/setup_database.sh
+# Seguir la GUIA_INSTALACION_POSTGRESQL.md para configurar la base de datos
 ```
 
 ---

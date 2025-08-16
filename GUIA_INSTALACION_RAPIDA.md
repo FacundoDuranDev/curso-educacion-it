@@ -47,6 +47,12 @@ docker-compose --version
 - **Opción Completa:** Levanta todo el entorno (PostgreSQL + Hadoop + Spark + Jupyter)
 - **Para tener datos:** Debes seguir la `GUIA_INSTALACION_POSTGRESQL.md` después de levantar PostgreSQL
 
+### **🔑 Credenciales por Defecto:**
+- **Usuario:** `postgres` (superusuario)
+- **Contraseña:** `jupyter`
+- **Base de datos:** `postgres` (por defecto)
+- **Puerto:** `5432`
+
 ### **Opción Simple (Solo PostgreSQL):**
 ```bash
 # Dar permisos a los scripts
@@ -77,8 +83,11 @@ docker-compose ps
 
 ### **Verificar PostgreSQL:**
 ```bash
-# Conectar a PostgreSQL
+# Conectar a PostgreSQL (NOTA: educacionit debe existir primero)
 docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "SELECT version();"
+
+# Si educacionit no existe, conectar a postgres (base por defecto)
+docker exec -it educacionit-metastore-1 psql -U postgres -c "SELECT version();"
 ```
 
 **Deberías ver:**
@@ -102,7 +111,29 @@ docker exec -it educacionit-metastore-1 psql -U admin -d educacionit -c "\dt"
 
 ## 📊 **Paso 5: Conectar desde DBeaver**
 
-### **Configuración de conexión:**
+### **⚠️ IMPORTANTE - Dos Opciones de Conexión:**
+
+#### **Opción A: Conectar a base por defecto (postgres)**
+```
+Host: localhost
+Puerto: 5432
+Base de datos: postgres
+Usuario: postgres
+Contraseña: jupyter
+```
+
+#### **Opción B: Conectar a base educacionit (con datos del curso)**
+```
+Host: localhost
+Puerto: 5432
+Base de datos: educacionit
+Usuario: admin
+Contraseña: admin123
+```
+
+**Nota:** La Opción B requiere seguir primero la `GUIA_INSTALACION_POSTGRESQL.md`
+
+### **Configuración de conexión para educacionit:**
 - **Host:** `localhost`
 - **Puerto:** `5432`
 - **Base de datos:** `educacionit`
@@ -134,8 +165,8 @@ docker-compose ps
 
 ### **Ver logs de un servicio:**
 ```bash
-docker logs postgres
-docker logs hadoop-namenode
+docker logs educacionit-metastore-1
+docker logs educacionit-master-1
 ```
 
 ### **Detener el entorno:**
@@ -167,7 +198,7 @@ sudo systemctl stop postgresql
 chmod +x scripts/*.sh
 
 # O ejecutar con sudo
-sudo ./scripts/setup_database.sh
+# Seguir la GUIA_INSTALACION_POSTGRESQL.md para configurar la base de datos
 ```
 
 ### **Error: "Docker not running"**
