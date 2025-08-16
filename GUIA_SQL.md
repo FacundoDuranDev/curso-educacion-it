@@ -298,6 +298,286 @@ SELECT * FROM clientes WHERE NOT ciudad = 'Madrid';
 
 ---
 
+## 🔗 **JOINs - Uniendo Tablas (Concepto Fundamental)**
+
+Los JOINs son la base para relacionar datos entre múltiples tablas. Te explico cada tipo con ejemplos visuales:
+
+### **🎯 ¿Qué son los JOINs?**
+Los JOINs permiten combinar filas de dos o más tablas basándose en una condición de relación.
+
+### **📊 Tipos de JOINs**
+
+#### **1. INNER JOIN (JOIN por defecto)**
+**Solo muestra registros que coinciden en AMBAS tablas**
+
+```sql
+-- Sintaxis básica
+SELECT columnas
+FROM tabla1
+INNER JOIN tabla2 ON tabla1.id = tabla2.tabla1_id;
+
+-- Ejemplo práctico
+SELECT c.nombre, v.fecha, v.total
+FROM clientes c
+INNER JOIN ventas v ON c.id = v.id_cliente;
+```
+
+**Visualización:**
+```
+Tabla A: clientes          Tabla B: ventas
+┌─────┬─────────┐         ┌─────┬─────────┬─────────┐
+│ id  │ nombre  │         │ id  │cliente_id│ total  │
+├─────┼─────────┤         ├─────┼─────────┼─────────┤
+│  1  │ Juan    │         │  1  │    1    │  100   │
+│  2  │ Ana     │         │  2  │    1    │  150   │
+│  3  │ Carlos  │         │  3  │    2    │   75   │
+└─────┴─────────┘         └─────┴─────────┴─────────┘
+
+INNER JOIN Resultado:
+┌─────────┬─────────┬─────────┐
+│ nombre  │ fecha  │ total   │
+├─────────┼─────────┼─────────┤
+│ Juan    │   1    │  100    │ ← Solo registros que coinciden
+│ Juan    │   2    │  150    │ ← Solo registros que coinciden
+│ Ana     │   3    │   75    │ ← Solo registros que coinciden
+└─────────┴─────────┴─────────┘
+```
+
+#### **2. LEFT JOIN (LEFT OUTER JOIN)**
+**Muestra TODOS los registros de la tabla izquierda + coincidencias de la derecha**
+
+```sql
+-- Sintaxis
+SELECT columnas
+FROM tabla1
+LEFT JOIN tabla2 ON tabla1.id = tabla2.tabla1_id;
+
+-- Ejemplo: Todos los clientes, tengan o no ventas
+SELECT c.nombre, v.fecha, v.total
+FROM clientes c
+LEFT JOIN ventas v ON c.id = v.id_cliente;
+```
+
+**Visualización:**
+```
+Tabla A: clientes          Tabla B: ventas
+┌─────┬─────────┐         ┌─────┬─────────┬─────────┐
+│ id  │ nombre  │         │ id  │cliente_id│ total  │
+├─────┼─────────┤         ├─────┼─────────┼─────────┤
+│  1  │ Juan    │         │  1  │    1    │  100   │
+│  2  │ Ana     │         │  2  │    1    │  150   │
+│  3  │ Carlos  │         │  3  │    2    │   75   │
+└─────┴─────────┘         └─────┴─────────┴─────────┘
+
+LEFT JOIN Resultado:
+┌─────────┬─────────┬─────────┐
+│ nombre  │ fecha  │ total   │
+├─────────┼─────────┼─────────┤
+│ Juan    │   1    │  100    │ ← Coincide
+│ Juan    │   2    │  150    │ ← Coincide
+│ Ana     │   3    │   75    │ ← Coincide
+│ Carlos  │ NULL   │  NULL   │ ← NO tiene ventas, pero aparece
+└─────────┴─────────┴─────────┘
+```
+
+#### **3. RIGHT JOIN (RIGHT OUTER JOIN)**
+**Muestra TODOS los registros de la tabla derecha + coincidencias de la izquierda**
+
+```sql
+-- Sintaxis
+SELECT columnas
+FROM tabla1
+RIGHT JOIN tabla2 ON tabla1.id = tabla2.tabla1_id;
+
+-- Ejemplo: Todas las ventas, aunque el cliente no exista
+SELECT c.nombre, v.fecha, v.total
+FROM clientes c
+RIGHT JOIN ventas v ON c.id = v.id_cliente;
+```
+
+**Visualización:**
+```
+Tabla A: clientes          Tabla B: ventas
+┌─────┬─────────┐         ┌─────┬─────────┬─────────┐
+│ id  │ nombre  │         │ id  │cliente_id│ total  │
+├─────┼─────────┤         ├─────┼─────────┼─────────┤
+│  1  │ Juan    │         │  1  │    1    │  100   │
+│  2  │ Ana     │         │  2  │    1    │  150   │
+│  3  │ Carlos  │         │  3  │    2    │   75   │
+└─────┴─────────┘         └─────┴─────────┴─────────┘
+
+RIGHT JOIN Resultado:
+┌─────────┬─────────┬─────────┐
+│ nombre  │ fecha  │ total   │
+├─────────┼─────────┼─────────┤
+│ Juan    │   1    │  100    │ ← Coincide
+│ Juan    │   2    │  150    │ ← Coincide
+│ Ana     │   3    │   75    │ ← Coincide
+│ NULL    │   4    │  200    │ ← Venta sin cliente (aparece)
+└─────────┴─────────┴─────────┘
+```
+
+#### **4. FULL JOIN (FULL OUTER JOIN)**
+**Muestra TODOS los registros de AMBAS tablas**
+
+```sql
+-- Sintaxis
+SELECT columnas
+FROM tabla1
+FULL JOIN tabla2 ON tabla1.id = tabla2.tabla1_id;
+
+-- Ejemplo: Todos los clientes y todas las ventas
+SELECT c.nombre, v.fecha, v.total
+FROM clientes c
+FULL JOIN ventas v ON c.id = v.id_cliente;
+```
+
+**Visualización:**
+```
+Tabla A: clientes          Tabla B: ventas
+┌─────┬─────────┐         ┌─────┬─────────┬─────────┐
+│ id  │ nombre  │         │ id  │cliente_id│ total  │
+├─────┼─────────┤         ├─────┼─────────┼─────────┤
+│  1  │ Juan    │         │  1  │    1    │  100   │
+│  2  │ Ana     │         │  2  │    1    │  150   │
+│  3  │ Carlos  │         │  3  │    2    │   75   │
+└─────┴─────────┘         └─────┴─────────┴─────────┘
+
+FULL JOIN Resultado:
+┌─────────┬─────────┬─────────┐
+│ nombre  │ fecha  │ total   │
+├─────────┼─────────┼─────────┤
+│ Juan    │   1    │  100    │ ← Coincide
+│ Juan    │   2    │  150    │ ← Coincide
+│ Ana     │   3    │   75    │ ← Coincide
+│ Carlos  │ NULL   │  NULL   │ ← Cliente sin ventas
+│ NULL    │   4    │  200    │ ← Venta sin cliente
+└─────────┴─────────┴─────────┘
+```
+
+#### **5. CROSS JOIN (Producto Cartesiano)**
+**Combina CADA fila de la primera tabla con CADA fila de la segunda**
+
+```sql
+-- Sintaxis
+SELECT columnas
+FROM tabla1
+CROSS JOIN tabla2;
+
+-- Ejemplo: Todas las combinaciones posibles
+SELECT c.nombre, p.nombre as producto
+FROM clientes c
+CROSS JOIN productos p;
+```
+
+**Visualización:**
+```
+Tabla A: clientes          Tabla B: productos
+┌─────┬─────────┐         ┌─────┬─────────┐
+│ id  │ nombre  │         │ id  │ nombre  │
+├─────┼─────────┤         ├─────┼─────────┤
+│  1  │ Juan    │         │  1  │ Laptop  │
+│  2  │ Ana     │         │  2  │ Mouse   │
+└─────┴─────────┘         └─────┴─────────┘
+
+CROSS JOIN Resultado:
+┌─────────┬─────────┐
+│ nombre  │producto │
+├─────────┼─────────┤
+│ Juan    │ Laptop  │ ← Juan + Laptop
+│ Juan    │ Mouse   │ ← Juan + Mouse
+│ Ana     │ Laptop  │ ← Ana + Laptop
+│ Ana     │ Mouse   │ ← Ana + Mouse
+└─────────┴─────────┘
+```
+
+### **🎯 Casos de Uso Prácticos**
+
+#### **Ejemplo 1: Clientes con sus ventas totales**
+```sql
+SELECT 
+    c.nombre,
+    COUNT(v.id_venta) as total_ventas,
+    SUM(v.total) as monto_total
+FROM clientes c
+LEFT JOIN ventas v ON c.id = v.id_cliente
+GROUP BY c.id, c.nombre
+ORDER BY monto_total DESC;
+```
+
+#### **Ejemplo 2: Productos que nunca se vendieron**
+```sql
+SELECT p.nombre, p.precio
+FROM productos p
+LEFT JOIN ventas v ON p.id = v.id_producto
+WHERE v.id_venta IS NULL;
+```
+
+#### **Ejemplo 3: Empleados con ventas por sucursal**
+```sql
+SELECT 
+    e.nombre,
+    s.nombre as sucursal,
+    COUNT(v.id_venta) as ventas_realizadas
+FROM empleados e
+INNER JOIN sucursales s ON e.id_sucursal = s.id
+LEFT JOIN ventas v ON e.id = v.id_empleado
+GROUP BY e.id, e.nombre, s.nombre
+ORDER BY ventas_realizadas DESC;
+```
+
+### **⚠️ Errores Comunes con JOINs**
+
+#### **1. Olvidar la condición ON**
+```sql
+-- ❌ MALO - Crea producto cartesiano (miles de filas)
+SELECT * FROM clientes JOIN ventas;
+
+-- ✅ BUENO - Especifica la relación
+SELECT * FROM clientes JOIN ventas ON clientes.id = ventas.id_cliente;
+```
+
+#### **2. Usar JOINs innecesarios**
+```sql
+-- ❌ MALO - JOIN innecesario
+SELECT c.nombre, c.edad
+FROM clientes c
+JOIN ventas v ON c.id = v.id_cliente
+WHERE c.ciudad = 'Madrid';
+
+-- ✅ BUENO - Solo una tabla
+SELECT nombre, edad
+FROM clientes
+WHERE ciudad = 'Madrid';
+```
+
+#### **3. Confundir LEFT vs RIGHT JOIN**
+```sql
+-- ❌ CONFUSO - RIGHT JOIN
+SELECT c.nombre, v.fecha
+FROM clientes c
+RIGHT JOIN ventas v ON c.id = v.id_cliente;
+
+-- ✅ CLARO - LEFT JOIN (más intuitivo)
+SELECT c.nombre, v.fecha
+FROM ventas v
+LEFT JOIN clientes c ON v.id_cliente = c.id;
+```
+
+### **🔍 Diagrama de Venn de JOINs**
+
+```
+INNER JOIN:        LEFT JOIN:         RIGHT JOIN:        FULL JOIN:
+    A ∩ B             A                    B              A ∪ B
+   ┌───┐            ┌───┐               ┌───┐           ┌───┐
+   │   │            │   │               │   │           │   │
+   │███│            │███│               │███│           │███│
+   │   │            │   │               │   │           │   │
+   └───┘            └───┘               └───┘           └───┘
+```
+
+---
+
 ## 💡 Consejos Prácticos
 
 ### 1. Siempre usa WHERE en UPDATE y DELETE
