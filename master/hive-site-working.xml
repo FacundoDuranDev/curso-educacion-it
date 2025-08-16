@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+    <!-- HDFS Warehouse Directory -->
+    <property>
+        <name>hive.metastore.warehouse.dir</name>
+        <value>/user/hive/warehouse</value>
+    </property>
+    
+    <!-- PostgreSQL Metastore Configuration -->
+    <property>
+        <name>javax.jdo.option.ConnectionDriverName</name>
+        <value>org.postgresql.Driver</value>
+    </property>
+    <property>
+        <name>javax.jdo.option.ConnectionURL</name>
+        <value>jdbc:postgresql://metastore:5432/metastore</value>
+    </property>
+    <property>
+        <name>javax.jdo.option.ConnectionUserName</name>
+        <value>jupyter</value>
+    </property>
+    <property>
+        <name>javax.jdo.option.ConnectionPassword</name>
+        <value>jupyter</value>
+    </property>
+    
+    <!-- Metastore Schema Verification -->
+    <property>
+        <name>hive.metastore.schema.verification</name>
+        <value>false</value>
+    </property>
+    
+    <!-- Metastore Connection -->
+    <property>
+        <name>hive.metastore.uris</name>
+        <value>thrift://localhost:9083</value>
+    </property>
+    
+    <!-- HiveServer2 Configuration - SIMPLIFICADA -->
+    <property>
+        <name>hive.server2.thrift.port</name>
+        <value>10000</value>
+    </property>
+    <property>
+        <name>hive.server2.thrift.bind.host</name>
+        <value>0.0.0.0</value>
+    </property>
+    <property>
+        <name>hive.server2.enable.doAs</name>
+        <value>false</value>
+    </property>
+    <property>
+        <name>hive.server2.authentication</name>
+        <value>NONE</value>
+    </property>
+    
+    <!-- Hive Execution Engine -->
+    <property>
+        <name>hive.execution.engine</name>
+        <value>mr</value>
+    </property>
+    
+    <!-- Hive Logging -->
+    <property>
+        <name>hive.log.level</name>
+        <value>INFO</value>
+    </property>
+    
+    <!-- Hive Stats -->
+    <property>
+        <name>hive.stats.jdbc.timeout</name>
+        <value>30</value>
+    </property>
+    <property>
+        <name>hive.stats.retries.wait</name>
+        <value>3000</value>
+    </property>
+</configuration>
