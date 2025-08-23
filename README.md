@@ -1,5 +1,30 @@
 # Clúster Hadoop-Hive-Spark con Jupyter Notebook en Docker
 
+## 🚨 **IMPORTANTE: Diferencia en Nombres de Contenedores**
+
+**Docker Compose v2 (actual - guiones medios):**
+- `educacionit-metastore-1`
+- `educacionit-master-1` 
+- `educacionit-worker1-1`
+
+**Docker Compose v1 (anterior - guiones bajos):**
+- `educacionit_metastore_1`
+- `educacionit_master_1` 
+- `educacionit_worker1_1`
+
+**🔍 Verificar tu versión:**
+```bash
+docker-compose --version
+```
+
+**💡 Tip**: Siempre usa `docker-compose ps` para ver los nombres exactos.
+
+**🔧 Script de Detección Automática:**
+```bash
+./detect_container_names.sh
+```
+Este script detecta automáticamente tu versión de Docker Compose y muestra los nombres correctos.
+
 ## ⚠️ ADVERTENCIA DE SEGURIDAD
 **Este clúster está diseñado exclusivamente para entornos de desarrollo, pruebas y aprendizaje. NO utilizar en entornos de producción.**
 

@@ -1,5 +1,24 @@
 # ⚡ Comandos Rápidos - Data Engineering
 # Modificacion Sencilla
+
+## 🚨 **IMPORTANTE: Diferencia en Nombres de Contenedores**
+
+**Docker Compose v2 (actual - guiones medios):**
+- `educacionit-metastore-1`
+- `educacionit-master-1` 
+- `educacionit-worker1-1`
+
+**Docker Compose v1 (anterior - guiones bajos):**
+- `educacionit_metastore_1`
+- `educacionit_master_1` 
+- `educacionit_worker1_1`
+
+**🔍 Verificar tu versión:**
+```bash
+docker-compose --version
+```
+
+**💡 Tip**: Siempre usa `docker-compose ps` para ver los nombres exactos.
 ## 🚀 **LEVANTAR TODO (UN SOLO COMANDO)**
 ```bash
 ./start.sh
