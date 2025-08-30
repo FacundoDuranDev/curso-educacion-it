@@ -62,7 +62,6 @@ Evaluar la calidad de la información disponible y proponer mejoras para asegura
 
 #### **Venta.csv (2.5MB, múltiples registros):**
 - ✅ **Completos:** Todos los campos obligatorios
-- ❌ **Validaciones:** Fechas de entrega posteriores a fechas de venta
 
 #### **Compra.csv (11,541 registros):**
 - ✅ **Completos:** Todos los campos obligatorios
@@ -122,8 +121,8 @@ Evaluar la calidad de la información disponible y proponer mejoras para asegura
 
 #### **Nomenclatura Inconsistente:**
 - **Clientes:** `ID` vs **Productos:** `ID_PRODUCTO`
-- **Empleados:** `ID_empleado` vs **Venta:** `IdVenta`
-- **Sucursales:** `ID` vs **Compra:** `IdProducto`
+- **Empleados:** `ID_empleado` vs **Venta:** `Id_Venta`
+- **Sucursales:** `ID` vs **Compra:** `Id_Producto`
 
 #### **Estructura de Datos:**
 - **Separadores mixtos:** Algunos archivos usan `;` otros `,`
