@@ -158,6 +158,7 @@ services:
     #       devices:
     #         - capabilities: [gpu]
 
+
 volumes:
   namenode:
   namesecondary:
