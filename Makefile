@@ -1,3 +1,4 @@
+docker-
 .PHONY: help up down status build clean
 
 # Comando por defecto - construir Y levantar todo automáticamente
@@ -11,6 +12,7 @@ build:
 	docker build -t hadoop-hive-spark-worker ./worker
 	docker build -t hadoop-hive-spark-history ./history
 	docker build -t hadoop-hive-spark-jupyter ./jupyter
+	docker build -t hadoop-hive-spark-jupyterlab ./jupyterlab
 	@echo "✅ Imágenes construidas correctamente"
 
 # Levantar todo el entorno

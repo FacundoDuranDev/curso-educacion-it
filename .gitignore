@@ -1,0 +1,16 @@
+# Jupyter checkpoints y archivos temporales
+jupyter/notebook/.ipynb_checkpoints/
+jupyter/notebook/Untitled*.ipynb
+jupyter/notebook/derby.log
+jupyter/notebook/metastore_db/
+
+# Logs de Docker
+*.log
+
+# Archivos temporales del sistema
+.DS_Store
+Thumbs.db
+
+# Variables de entorno
+.env
+.env.local
