@@ -1,4 +1,3 @@
-docker-
 .PHONY: help up down status build clean
 
 # Comando por defecto - construir Y levantar todo automáticamente
