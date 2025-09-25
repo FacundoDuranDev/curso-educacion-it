@@ -9,7 +9,7 @@ Antes de ejecutar cualquier job, asegúrate de que el clúster esté funcionando
 ### 1. Verificar que YARN esté activo
 ```bash
 # Verificar nodos YARN
-docker exec curso-educacion-it-master-1 bash -c "yarn node -list"
+docker exec educacionit-master-1 bash -c "yarn node -list"
 
 # Deberías ver algo como:
 # Total Nodes:2
@@ -21,14 +21,14 @@ docker exec curso-educacion-it-master-1 bash -c "yarn node -list"
 ### 2. Si los nodos no aparecen, reiniciar NodeManagers
 ```bash
 # Reiniciar NodeManager en worker1
-docker exec curso-educacion-it-worker1-1 bash -c "yarn nodemanager" &
+docker exec educacionit-worker1-1 bash -c "yarn nodemanager" &
 
 # Reiniciar NodeManager en worker2
-docker exec curso-educacion-it-worker2-1 bash -c "yarn nodemanager" &
+docker exec educacionit-worker2-1 bash -c "yarn nodemanager" &
 
 # Esperar 10 segundos y verificar
 sleep 10
-docker exec curso-educacion-it-master-1 bash -c "yarn node -list"
+docker exec educacionit-master-1 bash -c "yarn node -list"
 ```
 
 ## 📊 Jobs Disponibles
@@ -127,31 +127,31 @@ EOF
 ### Paso 2: Copiar el script al contenedor
 ```bash
 # Copiar script al contenedor master
-docker cp wordcount-yarn.sh curso-educacion-it-master-1:/home/jupyter/
+docker cp wordcount-yarn.sh educacionit-master-1:/home/jupyter/
 ```
 
 ### Paso 3: Ejecutar el job
 ```bash
 # Ejecutar WordCount
-docker exec curso-educacion-it-master-1 bash /home/jupyter/wordcount-yarn.sh
+docker exec educacionit-master-1 bash /home/jupyter/wordcount-yarn.sh
 ```
 
 ### Paso 4: Monitorear el job (Opcional)
 ```bash
 # Ver aplicaciones en ejecución
-docker exec curso-educacion-it-master-1 bash -c "yarn application -list"
+docker exec educacionit-master-1 bash -c "yarn application -list"
 
 # Ver detalles de una aplicación específica
-docker exec curso-educacion-it-master-1 bash -c "yarn application -status <application_id>"
+docker exec educacionit-master-1 bash -c "yarn application -status <application_id>"
 ```
 
 ### Paso 5: Ver resultados detallados
 ```bash
 # Ver todos los resultados
-docker exec curso-educacion-it-master-1 bash -c "hdfs dfs -cat /jobs-prueba/wordcount/output/part-r-00000"
+docker exec educacionit-master-1 bash -c "hdfs dfs -cat /jobs-prueba/wordcount/output/part-r-00000"
 
 # Ver solo las 10 palabras más frecuentes
-docker exec curso-educacion-it-master-1 bash -c "hdfs dfs -cat /jobs-prueba/wordcount/output/part-r-00000 | sort -k2 -nr | head -10"
+docker exec educacionit-master-1 bash -c "hdfs dfs -cat /jobs-prueba/wordcount/output/part-r-00000 | sort -k2 -nr | head -10"
 ```
 
 ### Resultados esperados:
@@ -177,8 +177,8 @@ permite 3
 ### Ejecución rápida:
 ```bash
 # Copiar y ejecutar
-docker cp jobs-prueba/2-pi-calculator.sh curso-educacion-it-master-1:/home/jupyter/
-docker exec curso-educacion-it-master-1 bash /home/jupyter/2-pi-calculator.sh
+docker cp jobs-prueba/2-pi-calculator.sh educacionit-master-1:/home/jupyter/
+docker exec educacionit-master-1 bash /home/jupyter/2-pi-calculator.sh
 ```
 
 ---
@@ -187,23 +187,23 @@ docker exec curso-educacion-it-master-1 bash /home/jupyter/2-pi-calculator.sh
 
 ### Ver aplicaciones activas
 ```bash
-docker exec curso-educacion-it-master-1 bash -c "yarn application -list"
+docker exec educacionit-master-1 bash -c "yarn application -list"
 ```
 
 ### Ver detalles de una aplicación
 ```bash
-docker exec curso-educacion-it-master-1 bash -c "yarn application -status <application_id>"
+docker exec educacionit-master-1 bash -c "yarn application -status <application_id>"
 ```
 
 ### Ver logs de una aplicación
 ```bash
-docker exec curso-educacion-it-master-1 bash -c "yarn logs -applicationId <application_id>"
+docker exec educacionit-master-1 bash -c "yarn logs -applicationId <application_id>"
 ```
 
 ### Ver estado del clúster
 ```bash
-docker exec curso-educacion-it-master-1 bash -c "yarn node -list"
-docker exec curso-educacion-it-master-1 bash -c "yarn node -status <node_id>"
+docker exec educacionit-master-1 bash -c "yarn node -list"
+docker exec educacionit-master-1 bash -c "yarn node -status <node_id>"
 ```
 
 ### Acceder a la interfaz web de YARN
@@ -244,12 +244,12 @@ cat > mapred-site-fixed.xml << 'EOF'
 EOF
 
 # Copiar a todos los contenedores
-docker cp mapred-site-fixed.xml curso-educacion-it-master-1:/opt/hadoop/etc/hadoop/mapred-site.xml
-docker cp mapred-site-fixed.xml curso-educacion-it-worker1-1:/opt/hadoop/etc/hadoop/mapred-site.xml
-docker cp mapred-site-fixed.xml curso-educacion-it-worker2-1:/opt/hadoop/etc/hadoop/mapred-site.xml
+docker cp mapred-site-fixed.xml educacionit-master-1:/opt/hadoop/etc/hadoop/mapred-site.xml
+docker cp mapred-site-fixed.xml educacionit-worker1-1:/opt/hadoop/etc/hadoop/mapred-site.xml
+docker cp mapred-site-fixed.xml educacionit-worker2-1:/opt/hadoop/etc/hadoop/mapred-site.xml
 
 # Reiniciar YARN
-docker exec curso-educacion-it-master-1 bash -c "stop-yarn.sh && start-yarn.sh"
+docker exec educacionit-master-1 bash -c "stop-yarn.sh && start-yarn.sh"
 ```
 
 ### Problema: Nodos YARN no aparecen
@@ -257,10 +257,10 @@ docker exec curso-educacion-it-master-1 bash -c "stop-yarn.sh && start-yarn.sh"
 **Solución**: Reiniciar NodeManagers manualmente:
 
 ```bash
-docker exec curso-educacion-it-worker1-1 bash -c "yarn nodemanager" &
-docker exec curso-educacion-it-worker2-1 bash -c "yarn nodemanager" &
+docker exec educacionit-worker1-1 bash -c "yarn nodemanager" &
+docker exec educacionit-worker2-1 bash -c "yarn nodemanager" &
 sleep 10
-docker exec curso-educacion-it-master-1 bash -c "yarn node -list"
+docker exec educacionit-master-1 bash -c "yarn node -list"
 ```
 
 ---

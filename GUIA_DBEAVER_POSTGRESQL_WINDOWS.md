@@ -306,7 +306,7 @@ docker-compose restart metastore
 
 #### **Opciones:**
 - **Auto-commit:** `Sí`
-- **Read-only:** `No`
+- **Read-only:** `No` (Habilitado para escritura)
 - **Isolation level:** `Read Committed`
 
 ---

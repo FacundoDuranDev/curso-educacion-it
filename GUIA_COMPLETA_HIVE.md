@@ -50,13 +50,13 @@ docker-compose ps
 
 ```bash
 # Verificar PostgreSQL
-docker exec curso-educacion-it-metastore-1 psql -U postgres -c "\l"
+docker exec educacionit-metastore-1 psql -U postgres -c "\l"
 
 # Verificar HDFS
-docker exec curso-educacion-it-master-1 hdfs dfs -ls /
+docker exec educacionit-master-1 hdfs dfs -ls /
 
 # Verificar servicios Hadoop
-docker exec curso-educacion-it-master-1 jps
+docker exec educacionit-master-1 jps
 ```
 
 ---
@@ -67,7 +67,7 @@ docker exec curso-educacion-it-master-1 jps
 
 ```bash
 # Acceder al contenedor master
-docker exec -it curso-educacion-it-master-1 bash
+docker exec -it educacionit-master-1 bash
 
 # Crear directorios de Hive en HDFS
 hdfs dfs -mkdir -p /user/hive/warehouse
@@ -187,7 +187,7 @@ El archivo clave es `hive-site.xml`. Aquí está la configuración completa:
 
 ```bash
 # Desde el contenedor master
-docker exec -it curso-educacion-it-master-1 bash
+docker exec -it educacionit-master-1 bash
 
 # Hacer backup de la configuración actual
 cp /opt/hive/conf/hive-site.xml /opt/hive/conf/hive-site.xml.backup
@@ -381,7 +381,7 @@ SHOW TABLES;
 
 ```bash
 # Copiar archivos CSV al contenedor master
-docker cp data/etapa1/. curso-educacion-it-master-1:/tmp/etapa1/
+docker cp data/etapa1/. educacionit-master-1:/tmp/etapa1/
 
 # Subir archivos a HDFS
 hdfs dfs -put /tmp/etapa1/*.csv /user/data/etapa1/
@@ -474,7 +474,7 @@ resultado.show()
 docker ps | grep metastore
 
 # Verificar conectividad
-docker exec curso-educacion-it-master-1 ping metastore
+docker exec educacionit-master-1 ping metastore
 
 # Reiniciar MetaStore
 pkill -f MetaStore
@@ -514,7 +514,7 @@ ps aux | grep -i hive
 ss -tlnp | grep -E "(9083|10000)"
 
 # Verificar conectividad a PostgreSQL
-docker exec curso-educacion-it-master-1 psql -h metastore -U jupyter -d metastore -c "\l"
+docker exec educacionit-master-1 psql -h metastore -U jupyter -d metastore -c "\l"
 ```
 
 ---
@@ -546,33 +546,33 @@ docker-compose ps | grep -E "(metastore|master)" || {
 
 # 2. Configurar HDFS
 echo -e "${BLUE}🗄️ Paso 2: Configurando HDFS...${NC}"
-docker exec curso-educacion-it-master-1 hdfs dfs -mkdir -p /user/hive/warehouse /tmp /user/hive /user/data/etapa1
-docker exec curso-educacion-it-master-1 hdfs dfs -chmod 777 /user/hive/warehouse /tmp /user/hive /user/data/etapa1
+docker exec educacionit-master-1 hdfs dfs -mkdir -p /user/hive/warehouse /tmp /user/hive /user/data/etapa1
+docker exec educacionit-master-1 hdfs dfs -chmod 777 /user/hive/warehouse /tmp /user/hive /user/data/etapa1
 
 # 3. Configurar Hive
 echo -e "${BLUE}🐝 Paso 3: Configurando Hive...${NC}"
-docker exec curso-educacion-it-master-1 cp /opt/hive/conf/hive-site-working.xml /opt/hive/conf/hive-site.xml 2>/dev/null || echo "Archivo hive-site-working.xml no encontrado"
+docker exec educacionit-master-1 cp /opt/hive/conf/hive-site-working.xml /opt/hive/conf/hive-site.xml 2>/dev/null || echo "Archivo hive-site-working.xml no encontrado"
 
 # 4. Inicializar schema
 echo -e "${BLUE}📋 Paso 4: Inicializando schema...${NC}"
-docker exec curso-educacion-it-master-1 /opt/hive/bin/schematool -dbType postgres -initSchema 2>/dev/null || echo "Schema ya existe"
+docker exec educacionit-master-1 /opt/hive/bin/schematool -dbType postgres -initSchema 2>/dev/null || echo "Schema ya existe"
 
 # 5. Iniciar servicios
 echo -e "${BLUE}🔄 Paso 5: Iniciando servicios...${NC}"
-docker exec curso-educacion-it-master-1 bash -c "pkill -f MetaStore; pkill -f HiveServer2"
-docker exec -d curso-educacion-it-master-1 /opt/hive/bin/hive --service metastore
+docker exec educacionit-master-1 bash -c "pkill -f MetaStore; pkill -f HiveServer2"
+docker exec -d educacionit-master-1 /opt/hive/bin/hive --service metastore
 sleep 10
-docker exec -d curso-educacion-it-master-1 /opt/hive/bin/hive --service hiveserver2
+docker exec -d educacionit-master-1 /opt/hive/bin/hive --service hiveserver2
 
 # 6. Copiar datos
 echo -e "${BLUE}📁 Paso 6: Copiando datos...${NC}"
-docker cp data/etapa1/. curso-educacion-it-master-1:/tmp/etapa1/
-docker exec curso-educacion-it-master-1 hdfs dfs -put /tmp/etapa1/*.csv /user/data/etapa1/ 2>/dev/null || echo "Archivos ya existen"
+docker cp data/etapa1/. educacionit-master-1:/tmp/etapa1/
+docker exec educacionit-master-1 hdfs dfs -put /tmp/etapa1/*.csv /user/data/etapa1/ 2>/dev/null || echo "Archivos ya existen"
 
 echo -e "${GREEN}✅ Configuración de Hive completada${NC}"
 echo -e "${BLUE}🔌 Servicios disponibles:${NC}"
-echo -e "${YELLOW}   • Hive CLI: docker exec -it curso-educacion-it-master-1 /opt/hive/bin/hive${NC}"
-echo -e "${YELLOW}   • Beeline: docker exec -it curso-educacion-it-master-1 /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000${NC}"
+echo -e "${YELLOW}   • Hive CLI: docker exec -it educacionit-master-1 /opt/hive/bin/hive${NC}"
+echo -e "${YELLOW}   • Beeline: docker exec -it educacionit-master-1 /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000${NC}"
 echo -e "${YELLOW}   • HDFS Web: http://localhost:9870${NC}"
 ```
 
@@ -587,19 +587,19 @@ echo "=============================="
 
 # Verificar servicios
 echo "📊 Servicios corriendo:"
-docker exec curso-educacion-it-master-1 ps aux | grep -E "(metastore|hiveserver)" | grep -v grep
+docker exec educacionit-master-1 ps aux | grep -E "(metastore|hiveserver)" | grep -v grep
 
 # Verificar HDFS
 echo -e "\n🗄️ Directorios HDFS:"
-docker exec curso-educacion-it-master-1 hdfs dfs -ls /user/hive/
+docker exec educacionit-master-1 hdfs dfs -ls /user/hive/
 
 # Verificar conectividad
 echo -e "\n🔌 Conectividad:"
-docker exec curso-educacion-it-master-1 /opt/hive/bin/hive --service cli -e "SHOW DATABASES;" 2>/dev/null && echo "✅ Hive CLI funcional" || echo "❌ Hive CLI no funcional"
+docker exec educacionit-master-1 /opt/hive/bin/hive --service cli -e "SHOW DATABASES;" 2>/dev/null && echo "✅ Hive CLI funcional" || echo "❌ Hive CLI no funcional"
 
 # Verificar datos
 echo -e "\n📊 Datos disponibles:"
-docker exec curso-educacion-it-master-1 hdfs dfs -ls /user/data/etapa1/ | wc -l
+docker exec educacionit-master-1 hdfs dfs -ls /user/data/etapa1/ | wc -l
 echo "archivos CSV encontrados"
 ```
 
