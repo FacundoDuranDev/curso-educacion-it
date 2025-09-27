@@ -287,6 +287,7 @@ yarn application -list -appStates ALL | awk '{print $2}' | sort | uniq -c
 docker exec -it educacionit-master-1 tail -f /opt/hadoop/logs/yarn-hdfs-resourcemanager-*.log
 
 # Ver logs de NodeManager
+
 docker exec -it educacionit-worker-1 tail -f /opt/hadoop/logs/yarn-hdfs-nodemanager-*.log
 
 # Ver logs de aplicación específica

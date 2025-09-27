@@ -1,0 +1,637 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# 🚀 SPARK TUTORIAL 01: INTRODUCCIÓN BÁSICA\n",
+    "\n",
+    "## 🎯 **OBJETIVO**\n",
+    "Aprender los conceptos fundamentales de Apache Spark\n",
+    "\n",
+    "## 📋 **CONTENIDO**\n",
+    "- ¿Qué es Apache Spark?\n",
+    "- Configuración de SparkSession\n",
+    "- Conceptos básicos: RDD, DataFrames, Datasets\n",
+    "- Primeras operaciones\n",
+    "- Lazy Evaluation\n",
+    "- Trabajo con archivos\n",
+    "\n",
+    "---\n",
+    "\n",
+    "## 🔧 **CONFIGURACIÓN INICIAL**\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "📚 Librerías importadas correctamente\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Importar librerías necesarias\n",
+    "from pyspark.sql import SparkSession\n",
+    "from pyspark.sql.functions import col, count, sum as spark_sum\n",
+    "import os\n",
+    "\n",
+    "print(\"📚 Librerías importadas correctamente\")\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 🔧 **PASO 1: CREAR SPARKSESSION**\n",
+    "\n",
+    "SparkSession es el punto de entrada principal para usar Spark SQL y DataFrames.\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "🔧 Conectando a: spark://master:7077\n",
+      "✅ SparkSession creada exitosamente\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Crear SparkSession para el curso\n",
+    "import socket\n",
+    "import os\n",
+    "\n",
+    "# Detectar si estamos dentro de un contenedor Docker\n",
+    "def get_spark_master():\n",
+    "    try:\n",
+    "        # Intentar conectar al master de Docker\n",
+    "        hostname = socket.gethostname()\n",
+    "        if 'jupyter' in hostname or 'master' in hostname:\n",
+    "            return \"spark://master:7077\"  # Desde dentro del contenedor\n",
+    "        else:\n",
+    "            return \"spark://localhost:7077\"  # Desde fuera del contenedor\n",
+    "    except:\n",
+    "        return \"local[*]\"  # Fallback a modo local\n",
+    "\n",
+    "spark_master_url = get_spark_master()\n",
+    "print(f\"🔧 Conectando a: {spark_master_url}\")\n",
+    "\n",
+    "spark = SparkSession.builder \\\n",
+    "    .appName(\"EducacionIT-Spark-Basics\") \\\n",
+    "    .master(spark_master_url) \\\n",
+    "    .config(\"spark.executor.memory\", \"800m\") \\\n",
+    "    .config(\"spark.executor.cores\", \"1\") \\\n",
+    "    .config(\"spark.executor.instances\", \"2\") \\\n",
+    "    .config(\"spark.driver.memory\", \"1g\") \\\n",
+    "    .config(\"spark.driver.cores\", \"1\") \\\n",
+    "    .config(\"spark.sql.adaptive.enabled\", \"false\") \\\n",
+    "    .config(\"spark.sql.warehouse.dir\", \"/user/hive/warehouse\") \\\n",
+    "    .config(\"spark.sql.execution.arrow.pyspark.enabled\", \"true\") \\\n",
+    "    .enableHiveSupport() \\\n",
+    "    .getOrCreate()\n",
+    "\n",
+    "print(\"✅ SparkSession creada exitosamente\")\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "\n",
+       "            <div>\n",
+       "                <p><b>SparkSession - hive</b></p>\n",
+       "                \n",
+       "        <div>\n",
+       "            <p><b>SparkContext</b></p>\n",
+       "\n",
+       "            <p><a href=\"http://jupyterlab:4040\">Spark UI</a></p>\n",
+       "\n",
+       "            <dl>\n",
+       "              <dt>Version</dt>\n",
+       "                <dd><code>v3.5.3</code></dd>\n",
+       "              <dt>Master</dt>\n",
+       "                <dd><code>spark://master:7077</code></dd>\n",
+       "              <dt>AppName</dt>\n",
+       "                <dd><code>EducacionIT-Spark-Basics</code></dd>\n",
+       "            </dl>\n",
+       "        </div>\n",
+       "        \n",
+       "            </div>\n",
+       "        "
+      ],
+      "text/plain": [
+       "<pyspark.sql.session.SparkSession at 0x7f2fadaec040>"
+      ]
+     },
+     "execution_count": 9,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "spark"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 📊 **PASO 2: INFORMACIÓN DEL CLUSTER**\n",
+    "\n",
+    "Vamos a ver información sobre nuestro cluster Spark.\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "🔧 Nombre de la aplicación: EducacionIT-Spark-Basics\n",
+      "🆔 ID de la aplicación: app-20250927042620-0001\n",
+      "🌐 URL de la UI: http://jupyterlab:4040\n",
+      "📦 Versión de Spark: 3.5.3\n",
+      "🐍 Versión de Python: 3.10\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Información de la aplicación\n",
+    "print(\"🔧 Nombre de la aplicación:\", spark.sparkContext.appName)\n",
+    "print(\"🆔 ID de la aplicación:\", spark.sparkContext.applicationId)\n",
+    "print(\"🌐 URL de la UI:\", spark.sparkContext.uiWebUrl)\n",
+    "print(\"📦 Versión de Spark:\", spark.version)\n",
+    "print(\"🐍 Versión de Python:\", spark.sparkContext.pythonVer)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "AttributeError",
+     "evalue": "'StatusTracker' object has no attribute 'getExecutorInfos'",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mAttributeError\u001b[0m                            Traceback (most recent call last)",
+      "Cell \u001b[0;32mIn[11], line 3\u001b[0m\n\u001b[1;32m      1\u001b[0m \u001b[38;5;66;03m# Información del cluster\u001b[39;00m\n\u001b[1;32m      2\u001b[0m status \u001b[38;5;241m=\u001b[39m spark\u001b[38;5;241m.\u001b[39msparkContext\u001b[38;5;241m.\u001b[39mstatusTracker()\n\u001b[0;32m----> 3\u001b[0m executors \u001b[38;5;241m=\u001b[39m \u001b[43mstatus\u001b[49m\u001b[38;5;241;43m.\u001b[39;49m\u001b[43mgetExecutorInfos\u001b[49m()\n\u001b[1;32m      5\u001b[0m \u001b[38;5;28mprint\u001b[39m(\u001b[38;5;124mf\u001b[39m\u001b[38;5;124m\"\u001b[39m\u001b[38;5;124m👥 Número de ejecutores: \u001b[39m\u001b[38;5;132;01m{\u001b[39;00m\u001b[38;5;28mlen\u001b[39m(executors)\u001b[38;5;132;01m}\u001b[39;00m\u001b[38;5;124m\"\u001b[39m)\n\u001b[1;32m      6\u001b[0m \u001b[38;5;28mprint\u001b[39m(\u001b[38;5;124m\"\u001b[39m\u001b[38;5;130;01m\\n\u001b[39;00m\u001b[38;5;124m💾 Información de ejecutores:\u001b[39m\u001b[38;5;124m\"\u001b[39m)\n",
+      "\u001b[0;31mAttributeError\u001b[0m: 'StatusTracker' object has no attribute 'getExecutorInfos'"
+     ]
+    }
+   ],
+   "source": [
+    "# Información del cluster\n",
+    "status = spark.sparkContext.statusTracker()\n",
+    "executors = status.getExecutorInfos()\n",
+    "\n",
+    "print(f\"👥 Número de ejecutores: {len(executors)}\")\n",
+    "print(\"\\n💾 Información de ejecutores:\")\n",
+    "for executor in executors:\n",
+    "    print(f\"  - Ejecutor {executor.executorId}: {executor.maxMemory} bytes\")\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 📚 **PASO 3: TRABAJANDO CON RDDS**\n",
+    "\n",
+    "Los RDDs (Resilient Distributed Datasets) son la abstracción fundamental de Spark.\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "                                                                                "
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "🔢 RDD creado con 10 elementos\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "                                                                                "
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "➕ Suma total: 55\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "                                                                                "
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "📊 Promedio: 5.50\n",
+      "📈 Máximo: 10\n",
+      "📉 Mínimo: 1\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "                                                                                "
+     ]
+    }
+   ],
+   "source": [
+    "# Crear RDD desde una lista\n",
+    "numeros = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]\n",
+    "rdd_numeros = spark.sparkContext.parallelize(numeros)\n",
+    "\n",
+    "print(f\"🔢 RDD creado con {rdd_numeros.count()} elementos\")\n",
+    "print(f\"➕ Suma total: {rdd_numeros.sum()}\")\n",
+    "print(f\"📊 Promedio: {rdd_numeros.mean():.2f}\")\n",
+    "print(f\"📈 Máximo: {rdd_numeros.max()}\")\n",
+    "print(f\"📉 Mínimo: {rdd_numeros.min()}\")\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "🔢 Números pares: [2, 4, 6, 8, 10]\n",
+      "📐 Cuadrados: [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Transformaciones con RDD\n",
+    "rdd_pares = rdd_numeros.filter(lambda x: x % 2 == 0)\n",
+    "print(f\"🔢 Números pares: {rdd_pares.collect()}\")\n",
+    "\n",
+    "rdd_cuadrados = rdd_numeros.map(lambda x: x ** 2)\n",
+    "print(f\"📐 Cuadrados: {rdd_cuadrados.collect()}\")\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 📊 **PASO 4: TRABAJANDO CON DATAFRAMES**\n",
+    "\n",
+    "Los DataFrames son más fáciles de usar que los RDDs y están optimizados.\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "👥 DataFrame de empleados creado:\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "                                                                                "
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "+------+------------+-------+----+\n",
+      "|nombre|departamento|salario|edad|\n",
+      "+------+------------+-------+----+\n",
+      "|  Juan|          IT|  50000|  25|\n",
+      "| María|   Marketing|  45000|  30|\n",
+      "|Carlos|          IT|  55000|  28|\n",
+      "|   Ana|          HR|  40000|  35|\n",
+      "|  Luis|          IT|  60000|  32|\n",
+      "| Laura|   Marketing|  48000|  27|\n",
+      "+------+------------+-------+----+\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Crear DataFrame desde datos de ejemplo\n",
+    "datos_empleados = [\n",
+    "    (\"Juan\", \"IT\", 50000, 25),\n",
+    "    (\"María\", \"Marketing\", 45000, 30),\n",
+    "    (\"Carlos\", \"IT\", 55000, 28),\n",
+    "    (\"Ana\", \"HR\", 40000, 35),\n",
+    "    (\"Luis\", \"IT\", 60000, 32),\n",
+    "    (\"Laura\", \"Marketing\", 48000, 27)\n",
+    "]\n",
+    "\n",
+    "columnas = [\"nombre\", \"departamento\", \"salario\", \"edad\"]\n",
+    "df_empleados = spark.createDataFrame(datos_empleados, columnas)\n",
+    "\n",
+    "print(\"👥 DataFrame de empleados creado:\")\n",
+    "df_empleados.show()\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "📋 Schema del DataFrame:\n",
+      "root\n",
+      " |-- nombre: string (nullable = true)\n",
+      " |-- departamento: string (nullable = true)\n",
+      " |-- salario: long (nullable = true)\n",
+      " |-- edad: long (nullable = true)\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Ver schema del DataFrame\n",
+    "print(\"📋 Schema del DataFrame:\")\n",
+    "df_empleados.printSchema()\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "🔍 EMPLEADOS DEL DEPARTAMENTO IT:\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "                                                                                "
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "+------+------------+-------+----+\n",
+      "|nombre|departamento|salario|edad|\n",
+      "+------+------------+-------+----+\n",
+      "|  Juan|          IT|  50000|  25|\n",
+      "|Carlos|          IT|  55000|  28|\n",
+      "|  Luis|          IT|  60000|  32|\n",
+      "+------+------------+-------+----+\n",
+      "\n",
+      "\n",
+      "💰 EMPLEADOS CON SALARIO > 50000:\n",
+      "+------+------------+-------+----+\n",
+      "|nombre|departamento|salario|edad|\n",
+      "+------+------------+-------+----+\n",
+      "|Carlos|          IT|  55000|  28|\n",
+      "|  Luis|          IT|  60000|  32|\n",
+      "+------+------------+-------+----+\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Operaciones básicas con DataFrames\n",
+    "print(\"🔍 EMPLEADOS DEL DEPARTAMENTO IT:\")\n",
+    "df_empleados.filter(col(\"departamento\") == \"IT\").show()\n",
+    "\n",
+    "print(\"\\n💰 EMPLEADOS CON SALARIO > 50000:\")\n",
+    "df_empleados.filter(col(\"salario\") > 50000).show()\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "📊 ESTADÍSTICAS POR DEPARTAMENTO:\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "[Stage 22:=============================================>          (61 + 4) / 75]"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "+------------+---------------+-------------+----------+\n",
+      "|departamento|total_empleados|salario_total|edad_total|\n",
+      "+------------+---------------+-------------+----------+\n",
+      "|          HR|              1|        40000|        35|\n",
+      "|   Marketing|              2|        93000|        57|\n",
+      "|          IT|              3|       165000|        85|\n",
+      "+------------+---------------+-------------+----------+\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "                                                                                "
+     ]
+    }
+   ],
+   "source": [
+    "# Agregaciones\n",
+    "print(\"📊 ESTADÍSTICAS POR DEPARTAMENTO:\")\n",
+    "df_empleados.groupBy(\"departamento\").agg(\n",
+    "    count(\"nombre\").alias(\"total_empleados\"),\n",
+    "    spark_sum(\"salario\").alias(\"salario_total\"),\n",
+    "    spark_sum(\"edad\").alias(\"edad_total\")\n",
+    ").show()\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## ⚡ **PASO 5: LAZY EVALUATION**\n",
+    "\n",
+    "Spark usa evaluación perezosa (lazy evaluation) para optimizar el procesamiento.\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "🔢 DataFrame con 1000 números creado\n",
+      "🔄 Transformaciones aplicadas (sin ejecutar)\n",
+      "⚡ Las transformaciones son 'lazy' - no se ejecutan hasta ahora\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Crear DataFrame grande para demostrar lazy evaluation\n",
+    "numeros = list(range(1, 1001))\n",
+    "df_numeros = spark.createDataFrame([(x,) for x in numeros], [\"numero\"])\n",
+    "\n",
+    "print(\"🔢 DataFrame con 1000 números creado\")\n",
+    "\n",
+    "# Transformaciones (lazy)\n",
+    "df_transformado = df_numeros \\\n",
+    "    .filter(col(\"numero\") % 2 == 0) \\\n",
+    "    .filter(col(\"numero\") > 100) \\\n",
+    "    .filter(col(\"numero\") < 500) \\\n",
+    "    .select((col(\"numero\") * 2).alias(\"doble\"))\n",
+    "\n",
+    "print(\"🔄 Transformaciones aplicadas (sin ejecutar)\")\n",
+    "print(\"⚡ Las transformaciones son 'lazy' - no se ejecutan hasta ahora\")\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "🚀 Ejecutando acción - esto dispara el procesamiento...\n",
+      "✅ Resultado: 199 elementos\n",
+      "📊 Primeros 10: [204, 208, 212, 216, 220, 224, 228, 232, 236, 240]\n",
+      "⏱️ Tiempo de ejecución: 0.835 segundos\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Acción (triggers execution)\n",
+    "print(\"🚀 Ejecutando acción - esto dispara el procesamiento...\")\n",
+    "import time\n",
+    "start_time = time.time()\n",
+    "\n",
+    "resultado = df_transformado.collect()\n",
+    "\n",
+    "end_time = time.time()\n",
+    "print(f\"✅ Resultado: {len(resultado)} elementos\")\n",
+    "print(f\"📊 Primeros 10: {[r.doble for r in resultado[:10]]}\")\n",
+    "print(f\"⏱️ Tiempo de ejecución: {end_time - start_time:.3f} segundos\")\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 🎯 **RESUMEN DEL TUTORIAL**\n",
+    "\n",
+    "¡Felicitaciones! Has completado el tutorial básico de Spark.\n",
+    "\n",
+    "### **📚 Conceptos aprendidos:**\n",
+    "- ✅ **SparkSession**: Punto de entrada principal\n",
+    "- ✅ **RDDs**: Estructura de datos distribuida básica\n",
+    "- ✅ **DataFrames**: Estructura optimizada para análisis\n",
+    "- ✅ **Transformaciones**: Operaciones que crean nuevos DataFrames\n",
+    "- ✅ **Acciones**: Operaciones que ejecutan el procesamiento\n",
+    "- ✅ **Lazy Evaluation**: Optimización automática de Spark\n",
+    "\n",
+    "### **🚀 Próximos pasos:**\n",
+    "1. **Tutorial 02**: DataFrames Avanzados\n",
+    "2. **Tutorial 03**: Spark SQL\n",
+    "3. **Experimentar** con tus propios datos\n",
+    "\n",
+    "---\n",
+    "\n",
+    "**🎉 ¡Has dominado los fundamentos de Apache Spark!**\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Cerrar SparkSession\n",
+    "spark.stop()\n",
+    "print(\"🔒 SparkSession cerrada correctamente\")\n"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.10.12"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
