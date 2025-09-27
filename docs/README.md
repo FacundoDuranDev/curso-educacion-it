@@ -36,6 +36,7 @@ Esta documentación está organizada siguiendo el **Sistema Divio** para maximiz
 **¿Cuándo usar?** Cuando necesitas resolver algo concreto
 - 🗄️ **PostgreSQL**: Instalación, conexión, carga de datos
 - ⚡ **Hadoop-Spark**: Configuración Hive, HDFS, YARN
+- 🌊 **Streaming**: Kafka, Storm, procesamiento en tiempo real
 - 🛠️ **Troubleshooting**: Errores comunes y soluciones
 
 ### **💡 [03-CONCEPTS](./03-CONCEPTS/)**
