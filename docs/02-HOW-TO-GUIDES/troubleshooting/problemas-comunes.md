@@ -444,4 +444,42 @@ make      # Reconstruir todo
 
 ---
 
+## 🏷️ **PROBLEMAS DE NOMBRES DE CONTENEDORES**
+
+### **❌ Error: Nombres de contenedores incorrectos**
+
+**🔍 Síntomas:**
+```bash
+# Docker Compose v1 genera nombres con guiones bajos
+educacionit_metastore_1
+educacionit_master_1
+
+# Docker Compose v2 genera nombres con guiones medios  
+educacionit-metastore-1
+educacionit-master-1
+```
+
+**✅ SOLUCIÓN RECOMENDADA:**
+```bash
+# Usar nombres de servicios (funciona en ambas versiones)
+docker-compose exec metastore bash
+docker-compose exec master bash
+docker-compose exec jupyter bash
+
+# Ver nombres exactos de tus contenedores
+docker-compose ps
+```
+
+**🔧 SOLUCIÓN ALTERNATIVA:**
+```bash
+# Verificar versión de Docker Compose
+docker-compose --version
+
+# Actualizar a v2 si es necesario
+sudo apt install docker-compose-plugin  # Ubuntu/Debian
+brew install docker-compose             # macOS
+```
+
+---
+
 **🎯 Con esta guía deberías poder resolver el 95% de los problemas comunes!**
