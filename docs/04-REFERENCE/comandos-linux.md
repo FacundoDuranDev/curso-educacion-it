@@ -160,6 +160,52 @@ chmod -x archivo                     # Quitar ejecución
 chown usuario:grupo archivo          # Cambiar propietario
 ```
 
+### **Hacer Archivos Modificables (Especialmente Jupyter Notebooks):**
+```bash
+# Hacer un archivo específico modificable
+chmod 777 archivo.ipynb
+
+# Hacer todos los notebooks modificables en un directorio
+chmod 777 *.ipynb
+
+# Hacer todos los archivos de un directorio modificables recursivamente
+chmod -R 777 directorio/
+
+# Ejemplo específico para nuestros tutoriales de Spark
+chmod 777 jupyter/notebook/spark-tutorials/*/*.ipynb
+chmod 777 spark-tutorials/*/*.ipynb
+```
+
+### **Problema Común: Archivos de Solo Lectura**
+```bash
+# Verificar permisos actuales
+ls -la archivo.ipynb
+
+# Si muestra: -r--r--r-- (solo lectura)
+# Solucionarlo con:
+chmod 644 archivo.ipynb    # Lectura y escritura para propietario
+# O más permisivo:
+chmod 777 archivo.ipynb    # Lectura, escritura y ejecución para todos
+```
+
+### **Script para Hacer Todos los Notebooks Modificables:**
+```bash
+#!/bin/bash
+# Script para hacer todos los notebooks modificables
+echo "🔧 Haciendo notebooks modificables..."
+
+# Hacer notebooks modificables en Jupyter
+find jupyter/notebook/spark-tutorials/ -name "*.ipynb" -exec chmod 777 {} \;
+
+# Hacer notebooks modificables en spark-tutorials
+find spark-tutorials/ -name "*.ipynb" -exec chmod 777 {} \;
+
+# Hacer scripts Python ejecutables
+find . -name "*.py" -exec chmod +x {} \;
+
+echo "✅ Todos los archivos ahora son modificables"
+```
+
 ### **Información del Sistema:**
 ```bash
 whoami                               # Usuario actual
